@@ -1,0 +1,1342 @@
+[
+ {
+  "id": "desk",
+  "name": "Mesa de trabalho",
+  "category": "essenciais",
+  "kind": "essential",
+  "mount": "floor",
+  "w": 3,
+  "h": 2,
+  "recipe": "desk",
+  "variants": [
+   "Clássica",
+   "Rústica"
+  ],
+  "colors": [
+   "carvalho",
+   "nogueira",
+   "pinho",
+   "cerejeira",
+   "ebano",
+   "branco",
+   "azul",
+   "verde"
+  ],
+  "role": "desk",
+  "rotatable": true,
+  "solid": true,
+  "scope": "interior"
+ },
+ {
+  "id": "board",
+  "name": "Quadro de avisos",
+  "category": "essenciais",
+  "kind": "essential",
+  "mount": "wall",
+  "w": 2,
+  "h": 1,
+  "recipe": "board",
+  "variants": [
+   "Cortiça",
+   "Lousa"
+  ],
+  "colors": [
+   "carvalho",
+   "nogueira",
+   "pinho",
+   "cerejeira",
+   "ebano",
+   "branco",
+   "azul",
+   "verde"
+  ],
+  "role": "board",
+  "solid": false,
+  "scope": "interior"
+ },
+ {
+  "id": "chest",
+  "name": "Baú",
+  "category": "essenciais",
+  "kind": "essential",
+  "mount": "floor",
+  "w": 2,
+  "h": 1,
+  "recipe": "chest",
+  "variants": [
+   "Ferragens",
+   "Simples"
+  ],
+  "colors": [
+   "carvalho",
+   "nogueira",
+   "pinho",
+   "cerejeira",
+   "ebano",
+   "branco",
+   "azul",
+   "verde"
+  ],
+  "role": "chest",
+  "rotatable": true,
+  "solid": true,
+  "scope": "interior"
+ },
+ {
+  "id": "shelf",
+  "name": "Estante",
+  "category": "moveis",
+  "kind": "container",
+  "mount": "floor",
+  "w": 2,
+  "h": 1,
+  "recipe": "shelf",
+  "variants": [
+   "Clássica",
+   "Com arco"
+  ],
+  "colors": [
+   "carvalho",
+   "nogueira",
+   "pinho",
+   "cerejeira",
+   "ebano",
+   "branco",
+   "azul",
+   "verde"
+  ],
+  "containerType": "shelf",
+  "rotatable": true,
+  "solid": true,
+  "scope": "interior"
+ },
+ {
+  "id": "drawer",
+  "name": "Gaveteiro",
+  "category": "moveis",
+  "kind": "container",
+  "mount": "floor",
+  "w": 1,
+  "h": 1,
+  "recipe": "drawer",
+  "variants": [
+   "Quatro gavetas",
+   "Arquivo"
+  ],
+  "colors": [
+   "carvalho",
+   "nogueira",
+   "pinho",
+   "cerejeira",
+   "ebano",
+   "branco",
+   "azul",
+   "verde"
+  ],
+  "containerType": "drawer",
+  "rotatable": true,
+  "solid": true,
+  "scope": "interior"
+ },
+ {
+  "id": "cork",
+  "name": "Mural de cortiça",
+  "category": "moveis",
+  "kind": "container",
+  "mount": "wall",
+  "w": 2,
+  "h": 1,
+  "recipe": "cork",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "carvalho",
+   "nogueira",
+   "pinho",
+   "cerejeira",
+   "ebano",
+   "branco",
+   "azul",
+   "verde"
+  ],
+  "containerType": "cork",
+  "solid": false,
+  "scope": "interior"
+ },
+ {
+  "id": "box",
+  "name": "Caixa",
+  "category": "moveis",
+  "kind": "container",
+  "mount": "floor",
+  "w": 1,
+  "h": 1,
+  "recipe": "box",
+  "variants": [
+   "Madeira",
+   "Papelão"
+  ],
+  "colors": [
+   "carvalho",
+   "nogueira",
+   "pinho",
+   "cerejeira",
+   "ebano",
+   "branco",
+   "azul",
+   "verde"
+  ],
+  "containerType": "box",
+  "rotatable": true,
+  "solid": true,
+  "scope": "interior"
+ },
+ {
+  "id": "cabinet",
+  "name": "Armário",
+  "category": "moveis",
+  "kind": "container",
+  "mount": "floor",
+  "w": 2,
+  "h": 1,
+  "recipe": "cabinet",
+  "variants": [
+   "Duas portas",
+   "Com vidro"
+  ],
+  "colors": [
+   "carvalho",
+   "nogueira",
+   "pinho",
+   "cerejeira",
+   "ebano",
+   "branco",
+   "azul",
+   "verde"
+  ],
+  "containerType": "cabinet",
+  "rotatable": true,
+  "solid": true,
+  "scope": "interior"
+ },
+ {
+  "id": "bureau",
+  "name": "Escrivaninha",
+  "category": "moveis",
+  "kind": "container",
+  "mount": "floor",
+  "w": 2,
+  "h": 1,
+  "recipe": "bureau",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "carvalho",
+   "nogueira",
+   "pinho",
+   "cerejeira",
+   "ebano",
+   "branco",
+   "azul",
+   "verde"
+  ],
+  "containerType": "bureau",
+  "rotatable": true,
+  "solid": true,
+  "scope": "interior"
+ },
+ {
+  "id": "plant",
+  "name": "Planta",
+  "category": "decoracao",
+  "kind": "decor",
+  "mount": "floor",
+  "w": 1,
+  "h": 1,
+  "recipe": "plant",
+  "variants": [
+   "Samambaia",
+   "Ficus",
+   "Flores",
+   "Cacto"
+  ],
+  "colors": [
+   "terracota",
+   "azul",
+   "branco",
+   "verde"
+  ],
+  "solid": true,
+  "scope": "interior"
+ },
+ {
+  "id": "lamp",
+  "name": "Luminária de pé",
+  "category": "decoracao",
+  "kind": "decor",
+  "mount": "floor",
+  "w": 1,
+  "h": 1,
+  "recipe": "lamp",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "dourado",
+   "ferro",
+   "vinho"
+  ],
+  "solid": true,
+  "light": true,
+  "scope": "interior"
+ },
+ {
+  "id": "chair",
+  "name": "Cadeira",
+  "category": "decoracao",
+  "kind": "decor",
+  "mount": "floor",
+  "w": 1,
+  "h": 1,
+  "recipe": "chair",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "carvalho",
+   "nogueira",
+   "pinho",
+   "cerejeira",
+   "ebano",
+   "branco",
+   "azul",
+   "verde"
+  ],
+  "rotatable": true,
+  "solid": true,
+  "scope": "interior"
+ },
+ {
+  "id": "armchair",
+  "name": "Poltrona",
+  "category": "decoracao",
+  "kind": "decor",
+  "mount": "floor",
+  "w": 1,
+  "h": 1,
+  "recipe": "armchair",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "vinho",
+   "azul",
+   "verde",
+   "ocre",
+   "cinza",
+   "rosa"
+  ],
+  "rotatable": true,
+  "solid": true,
+  "scope": "interior"
+ },
+ {
+  "id": "sidetable",
+  "name": "Mesinha",
+  "category": "decoracao",
+  "kind": "decor",
+  "mount": "floor",
+  "w": 1,
+  "h": 1,
+  "recipe": "sidetable",
+  "variants": [
+   "Redonda",
+   "Com vaso"
+  ],
+  "colors": [
+   "carvalho",
+   "nogueira",
+   "pinho",
+   "cerejeira",
+   "ebano",
+   "branco",
+   "azul",
+   "verde"
+  ],
+  "solid": true,
+  "scope": "interior"
+ },
+ {
+  "id": "barrel",
+  "name": "Barril",
+  "category": "decoracao",
+  "kind": "decor",
+  "mount": "floor",
+  "w": 1,
+  "h": 1,
+  "recipe": "barrel",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "carvalho",
+   "nogueira",
+   "pinho",
+   "cerejeira",
+   "ebano",
+   "branco",
+   "azul",
+   "verde"
+  ],
+  "solid": true,
+  "scope": "interior"
+ },
+ {
+  "id": "crate",
+  "name": "Caixote",
+  "category": "decoracao",
+  "kind": "decor",
+  "mount": "floor",
+  "w": 1,
+  "h": 1,
+  "recipe": "crate",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "carvalho",
+   "nogueira",
+   "pinho",
+   "cerejeira",
+   "ebano",
+   "branco",
+   "azul",
+   "verde"
+  ],
+  "solid": true,
+  "scope": "interior"
+ },
+ {
+  "id": "candle",
+  "name": "Castiçal",
+  "category": "decoracao",
+  "kind": "decor",
+  "mount": "floor",
+  "w": 1,
+  "h": 1,
+  "recipe": "candle",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "dourado",
+   "ferro"
+  ],
+  "solid": true,
+  "light": true,
+  "scope": "interior"
+ },
+ {
+  "id": "globe",
+  "name": "Globo",
+  "category": "decoracao",
+  "kind": "decor",
+  "mount": "floor",
+  "w": 1,
+  "h": 1,
+  "recipe": "globe",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "carvalho",
+   "nogueira",
+   "pinho",
+   "cerejeira",
+   "ebano",
+   "branco",
+   "azul",
+   "verde"
+  ],
+  "solid": true,
+  "scope": "interior"
+ },
+ {
+  "id": "bookpile",
+  "name": "Pilha de livros",
+  "category": "decoracao",
+  "kind": "decor",
+  "mount": "floor",
+  "w": 1,
+  "h": 1,
+  "recipe": "bookpile",
+  "variants": [
+   "Baixa",
+   "Alta"
+  ],
+  "colors": [],
+  "solid": true,
+  "scope": "interior"
+ },
+ {
+  "id": "cat",
+  "name": "Gato",
+  "category": "decoracao",
+  "kind": "decor",
+  "mount": "floor",
+  "w": 1,
+  "h": 1,
+  "recipe": "cat",
+  "variants": [
+   "Dormindo",
+   "Sentado"
+  ],
+  "colors": [
+   "laranja",
+   "cinza",
+   "preto",
+   "branco"
+  ],
+  "solid": false,
+  "animated": true,
+  "scope": "interior"
+ },
+ {
+  "id": "workbench",
+  "name": "Bancada",
+  "category": "tematicos",
+  "kind": "decor",
+  "mount": "floor",
+  "w": 2,
+  "h": 1,
+  "recipe": "workbench",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "carvalho",
+   "nogueira",
+   "pinho",
+   "cerejeira",
+   "ebano",
+   "branco",
+   "azul",
+   "verde"
+  ],
+  "rotatable": true,
+  "solid": true,
+  "scope": "interior"
+ },
+ {
+  "id": "anvil",
+  "name": "Bigorna",
+  "category": "tematicos",
+  "kind": "decor",
+  "mount": "floor",
+  "w": 1,
+  "h": 1,
+  "recipe": "anvil",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [],
+  "solid": true,
+  "scope": "interior"
+ },
+ {
+  "id": "stove",
+  "name": "Fogão a lenha",
+  "category": "tematicos",
+  "kind": "decor",
+  "mount": "floor",
+  "w": 2,
+  "h": 1,
+  "recipe": "stove",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "ferro",
+   "vinho",
+   "azul"
+  ],
+  "solid": true,
+  "light": true,
+  "scope": "interior"
+ },
+ {
+  "id": "longtable",
+  "name": "Mesa comprida",
+  "category": "tematicos",
+  "kind": "decor",
+  "mount": "floor",
+  "w": 3,
+  "h": 1,
+  "recipe": "longtable",
+  "variants": [
+   "Posta",
+   "Vazia"
+  ],
+  "colors": [
+   "carvalho",
+   "nogueira",
+   "pinho",
+   "cerejeira",
+   "ebano",
+   "branco",
+   "azul",
+   "verde"
+  ],
+  "rotatable": true,
+  "solid": true,
+  "scope": "interior"
+ },
+ {
+  "id": "safe",
+  "name": "Cofre de ferro",
+  "category": "tematicos",
+  "kind": "decor",
+  "mount": "floor",
+  "w": 1,
+  "h": 1,
+  "recipe": "safe",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "ferro",
+   "verde",
+   "vinho"
+  ],
+  "solid": true,
+  "scope": "interior"
+ },
+ {
+  "id": "counter",
+  "name": "Balcão",
+  "category": "tematicos",
+  "kind": "decor",
+  "mount": "floor",
+  "w": 3,
+  "h": 1,
+  "recipe": "counter",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "carvalho",
+   "nogueira",
+   "pinho",
+   "cerejeira",
+   "ebano",
+   "branco",
+   "azul",
+   "verde"
+  ],
+  "rotatable": true,
+  "solid": true,
+  "scope": "interior"
+ },
+ {
+  "id": "weights",
+  "name": "Halteres",
+  "category": "tematicos",
+  "kind": "decor",
+  "mount": "floor",
+  "w": 2,
+  "h": 1,
+  "recipe": "weights",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [],
+  "solid": true,
+  "scope": "interior"
+ },
+ {
+  "id": "fireplace",
+  "name": "Lareira",
+  "category": "tematicos",
+  "kind": "decor",
+  "mount": "floor",
+  "w": 2,
+  "h": 1,
+  "recipe": "fireplace",
+  "variants": [
+   "Acesa",
+   "Apagada"
+  ],
+  "colors": [
+   "pedra",
+   "tijolo"
+  ],
+  "solid": true,
+  "light": true,
+  "animated": true,
+  "scope": "interior"
+ },
+ {
+  "id": "easel",
+  "name": "Cavalete",
+  "category": "tematicos",
+  "kind": "decor",
+  "mount": "floor",
+  "w": 1,
+  "h": 1,
+  "recipe": "easel",
+  "variants": [
+   "Paisagem",
+   "Retrato",
+   "Em branco"
+  ],
+  "colors": [
+   "carvalho",
+   "nogueira",
+   "pinho",
+   "cerejeira",
+   "ebano",
+   "branco",
+   "azul",
+   "verde"
+  ],
+  "solid": true,
+  "scope": "interior"
+ },
+ {
+  "id": "bed",
+  "name": "Cama de descanso",
+  "category": "tematicos",
+  "kind": "decor",
+  "mount": "floor",
+  "w": 1,
+  "h": 2,
+  "recipe": "bed",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "vinho",
+   "azul",
+   "verde",
+   "ocre",
+   "cinza",
+   "rosa"
+  ],
+  "solid": true,
+  "scope": "interior"
+ },
+ {
+  "id": "picture",
+  "name": "Quadro",
+  "category": "parede",
+  "kind": "decor",
+  "mount": "wall",
+  "w": 1,
+  "h": 1,
+  "recipe": "picture",
+  "variants": [
+   "Paisagem",
+   "Retrato",
+   "Flores"
+  ],
+  "colors": [
+   "dourado",
+   "nogueira",
+   "ebano",
+   "branco"
+  ],
+  "solid": false,
+  "acceptsImage": true,
+  "scope": "interior"
+ },
+ {
+  "id": "clock",
+  "name": "Relógio",
+  "category": "parede",
+  "kind": "decor",
+  "mount": "wall",
+  "w": 1,
+  "h": 1,
+  "recipe": "clock",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "nogueira",
+   "dourado",
+   "ebano"
+  ],
+  "solid": false,
+  "scope": "interior"
+ },
+ {
+  "id": "window",
+  "name": "Janela",
+  "category": "parede",
+  "kind": "decor",
+  "mount": "wall",
+  "w": 2,
+  "h": 1,
+  "recipe": "window",
+  "variants": [
+   "Com cortina",
+   "Simples"
+  ],
+  "colors": [
+   "vinho",
+   "azul",
+   "verde",
+   "ocre",
+   "cinza",
+   "rosa"
+  ],
+  "solid": false,
+  "light": true,
+  "scope": "interior"
+ },
+ {
+  "id": "walllamp",
+  "name": "Arandela",
+  "category": "parede",
+  "kind": "decor",
+  "mount": "wall",
+  "w": 1,
+  "h": 1,
+  "recipe": "walllamp",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "dourado",
+   "ferro"
+  ],
+  "solid": false,
+  "light": true,
+  "scope": "interior"
+ },
+ {
+  "id": "wallmap",
+  "name": "Mapa",
+  "category": "parede",
+  "kind": "decor",
+  "mount": "wall",
+  "w": 2,
+  "h": 1,
+  "recipe": "wallmap",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "nogueira",
+   "dourado"
+  ],
+  "solid": false,
+  "scope": "interior"
+ },
+ {
+  "id": "toolrack",
+  "name": "Painel de ferramentas",
+  "category": "parede",
+  "kind": "decor",
+  "mount": "wall",
+  "w": 2,
+  "h": 1,
+  "recipe": "toolrack",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "carvalho",
+   "nogueira",
+   "pinho",
+   "cerejeira",
+   "ebano",
+   "branco",
+   "azul",
+   "verde"
+  ],
+  "solid": false,
+  "scope": "interior"
+ },
+ {
+  "id": "banner",
+  "name": "Flâmula",
+  "category": "parede",
+  "kind": "decor",
+  "mount": "wall",
+  "w": 1,
+  "h": 1,
+  "recipe": "banner",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "vinho",
+   "azul",
+   "verde",
+   "ocre",
+   "cinza",
+   "rosa"
+  ],
+  "solid": false,
+  "scope": "interior"
+ },
+ {
+  "id": "wallshelf",
+  "name": "Prateleira",
+  "category": "parede",
+  "kind": "decor",
+  "mount": "wall",
+  "w": 1,
+  "h": 1,
+  "recipe": "wallshelf",
+  "variants": [
+   "Com potes",
+   "Com livros"
+  ],
+  "colors": [
+   "carvalho",
+   "nogueira",
+   "pinho",
+   "cerejeira",
+   "ebano",
+   "branco",
+   "azul",
+   "verde"
+  ],
+  "solid": false,
+  "scope": "interior"
+ },
+ {
+  "id": "rug",
+  "name": "Tapete",
+  "category": "tapetes",
+  "kind": "decor",
+  "mount": "rug",
+  "w": 4,
+  "h": 3,
+  "recipe": "rug",
+  "variants": [
+   "Bordado",
+   "Listrado"
+  ],
+  "colors": [
+   "vinho",
+   "azul",
+   "verde",
+   "ocre",
+   "cinza",
+   "rosa"
+  ],
+  "solid": false,
+  "scope": "interior"
+ },
+ {
+  "id": "ruground",
+  "name": "Tapete redondo",
+  "category": "tapetes",
+  "kind": "decor",
+  "mount": "rug",
+  "w": 2,
+  "h": 2,
+  "recipe": "ruground",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "vinho",
+   "azul",
+   "verde",
+   "ocre",
+   "cinza",
+   "rosa"
+  ],
+  "solid": false,
+  "scope": "interior"
+ },
+ {
+  "id": "runner",
+  "name": "Passadeira",
+  "category": "tapetes",
+  "kind": "decor",
+  "mount": "rug",
+  "w": 4,
+  "h": 1,
+  "recipe": "runner",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "vinho",
+   "azul",
+   "verde",
+   "ocre",
+   "cinza",
+   "rosa"
+  ],
+  "rotatable": true,
+  "solid": false,
+  "scope": "interior"
+ },
+ {
+  "id": "mat",
+  "name": "Colchonete",
+  "category": "tapetes",
+  "kind": "decor",
+  "mount": "rug",
+  "w": 2,
+  "h": 1,
+  "recipe": "mat",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "vinho",
+   "azul",
+   "verde",
+   "ocre",
+   "cinza",
+   "rosa"
+  ],
+  "rotatable": true,
+  "solid": false,
+  "scope": "interior"
+ },
+ {
+  "id": "tree_oak",
+  "name": "Carvalho",
+  "category": "natureza",
+  "kind": "decor",
+  "mount": "city",
+  "w": 1,
+  "h": 1,
+  "recipe": "tree_oak",
+  "variants": [
+   "Frondoso",
+   "Jovem"
+  ],
+  "colors": [
+   "verde",
+   "outono",
+   "florida"
+  ],
+  "solid": true,
+  "scope": "city"
+ },
+ {
+  "id": "tree_pine",
+  "name": "Pinheiro",
+  "category": "natureza",
+  "kind": "decor",
+  "mount": "city",
+  "w": 1,
+  "h": 1,
+  "recipe": "tree_pine",
+  "variants": [
+   "Alto",
+   "Baixo"
+  ],
+  "colors": [
+   "verde"
+  ],
+  "solid": true,
+  "scope": "city"
+ },
+ {
+  "id": "tree_birch",
+  "name": "Bétula",
+  "category": "natureza",
+  "kind": "decor",
+  "mount": "city",
+  "w": 1,
+  "h": 1,
+  "recipe": "tree_birch",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "verde",
+   "outono",
+   "florida"
+  ],
+  "solid": true,
+  "scope": "city"
+ },
+ {
+  "id": "tree_fruit",
+  "name": "Árvore frutífera",
+  "category": "natureza",
+  "kind": "decor",
+  "mount": "city",
+  "w": 1,
+  "h": 1,
+  "recipe": "tree_fruit",
+  "variants": [
+   "Maçãs",
+   "Laranjas"
+  ],
+  "colors": [
+   "verde"
+  ],
+  "solid": true,
+  "scope": "city"
+ },
+ {
+  "id": "bush",
+  "name": "Arbusto",
+  "category": "natureza",
+  "kind": "decor",
+  "mount": "city",
+  "w": 1,
+  "h": 1,
+  "recipe": "bush",
+  "variants": [
+   "Redondo",
+   "Com frutinhas"
+  ],
+  "colors": [
+   "verde",
+   "outono",
+   "florida"
+  ],
+  "solid": true,
+  "scope": "city"
+ },
+ {
+  "id": "flowerbed",
+  "name": "Canteiro",
+  "category": "natureza",
+  "kind": "decor",
+  "mount": "ground",
+  "w": 2,
+  "h": 1,
+  "recipe": "flowerbed",
+  "variants": [
+   "Misto",
+   "Tulipas",
+   "Girassóis"
+  ],
+  "colors": [],
+  "solid": false,
+  "scope": "city"
+ },
+ {
+  "id": "garden",
+  "name": "Horta",
+  "category": "natureza",
+  "kind": "decor",
+  "mount": "city",
+  "w": 2,
+  "h": 2,
+  "recipe": "garden",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [],
+  "solid": true,
+  "scope": "city"
+ },
+ {
+  "id": "rock",
+  "name": "Pedra",
+  "category": "natureza",
+  "kind": "decor",
+  "mount": "city",
+  "w": 1,
+  "h": 1,
+  "recipe": "rock",
+  "variants": [
+   "Padrão",
+   "Com musgo"
+  ],
+  "colors": [],
+  "solid": true,
+  "scope": "city"
+ },
+ {
+  "id": "fence",
+  "name": "Cerca",
+  "category": "objetos",
+  "kind": "decor",
+  "mount": "city",
+  "w": 1,
+  "h": 1,
+  "recipe": "fence",
+  "variants": [
+   "Madeira",
+   "Estacas"
+  ],
+  "colors": [
+   "carvalho",
+   "branco",
+   "nogueira"
+  ],
+  "rotatable": true,
+  "solid": true,
+  "scope": "city"
+ },
+ {
+  "id": "bench",
+  "name": "Banco",
+  "category": "objetos",
+  "kind": "decor",
+  "mount": "city",
+  "w": 2,
+  "h": 1,
+  "recipe": "bench",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "carvalho",
+   "nogueira",
+   "branco"
+  ],
+  "solid": true,
+  "scope": "city"
+ },
+ {
+  "id": "lantern",
+  "name": "Lanterna",
+  "category": "objetos",
+  "kind": "decor",
+  "mount": "city",
+  "w": 1,
+  "h": 1,
+  "recipe": "lantern",
+  "variants": [
+   "Poste",
+   "Baixa"
+  ],
+  "colors": [
+   "ferro",
+   "dourado"
+  ],
+  "solid": true,
+  "light": true,
+  "scope": "city"
+ },
+ {
+  "id": "pathstone",
+  "name": "Caminho de pedra",
+  "category": "objetos",
+  "kind": "decor",
+  "mount": "ground",
+  "w": 1,
+  "h": 1,
+  "recipe": "pathstone",
+  "variants": [
+   "Lajotas",
+   "Seixos"
+  ],
+  "colors": [],
+  "solid": false,
+  "scope": "city"
+ },
+ {
+  "id": "signpost",
+  "name": "Placa",
+  "category": "objetos",
+  "kind": "decor",
+  "mount": "city",
+  "w": 1,
+  "h": 1,
+  "recipe": "signpost",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "carvalho",
+   "nogueira"
+  ],
+  "solid": true,
+  "scope": "city"
+ },
+ {
+  "id": "haystack",
+  "name": "Fardo de feno",
+  "category": "objetos",
+  "kind": "decor",
+  "mount": "city",
+  "w": 1,
+  "h": 1,
+  "recipe": "haystack",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [],
+  "solid": true,
+  "scope": "city"
+ },
+ {
+  "id": "statue",
+  "name": "Estátua",
+  "category": "objetos",
+  "kind": "decor",
+  "mount": "city",
+  "w": 1,
+  "h": 1,
+  "recipe": "statue",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [],
+  "solid": true,
+  "scope": "city"
+ },
+ {
+  "id": "birdbath",
+  "name": "Bebedouro de pássaros",
+  "category": "objetos",
+  "kind": "decor",
+  "mount": "city",
+  "w": 1,
+  "h": 1,
+  "recipe": "birdbath",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [],
+  "solid": true,
+  "scope": "city"
+ },
+ {
+  "id": "smallbridge",
+  "name": "Pontezinha",
+  "category": "objetos",
+  "kind": "decor",
+  "mount": "ground",
+  "w": 2,
+  "h": 1,
+  "recipe": "smallbridge",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [
+   "carvalho",
+   "nogueira"
+  ],
+  "rotatable": true,
+  "solid": false,
+  "scope": "city"
+ },
+ {
+  "id": "chickens",
+  "name": "Galinhas",
+  "category": "objetos",
+  "kind": "decor",
+  "mount": "ground",
+  "w": 1,
+  "h": 1,
+  "recipe": "chickens",
+  "variants": [
+   "Padrão"
+  ],
+  "colors": [],
+  "solid": false,
+  "animated": true,
+  "scope": "city"
+ }
+]

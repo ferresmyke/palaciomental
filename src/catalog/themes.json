@@ -1,0 +1,562 @@
+[
+ {
+  "id": "oficina",
+  "name": "Oficina",
+  "area": "Trabalho e serviço",
+  "emblem": "hammer",
+  "model": "pedra",
+  "color": "ardosia",
+  "wall": "stone",
+  "floor": "planks",
+  "shelves": [
+   "Projetos",
+   "Equipes",
+   "Processos",
+   "Reuniões"
+  ],
+  "decor": [
+   {
+    "catalogId": "workbench",
+    "x": 1,
+    "y": 6,
+    "rot": 0,
+    "variant": 0,
+    "color": "nogueira"
+   },
+   {
+    "catalogId": "anvil",
+    "x": 3,
+    "y": 7,
+    "rot": 0,
+    "variant": 0,
+    "color": null
+   },
+   {
+    "catalogId": "toolrack",
+    "x": 8,
+    "y": 0,
+    "rot": 0,
+    "variant": 0,
+    "color": null
+   },
+   {
+    "catalogId": "barrel",
+    "x": 13,
+    "y": 7,
+    "rot": 0,
+    "variant": 0,
+    "color": null
+   },
+   {
+    "catalogId": "lamp",
+    "x": 4,
+    "y": 0,
+    "rot": 0,
+    "variant": 0,
+    "color": "ferro"
+   },
+   {
+    "catalogId": "rug",
+    "x": 5,
+    "y": 3,
+    "rot": 0,
+    "variant": 1,
+    "color": "cinza"
+   },
+   {
+    "catalogId": "chair",
+    "x": 6,
+    "y": 5,
+    "rot": 2,
+    "variant": 0,
+    "color": "nogueira"
+   },
+   {
+    "catalogId": "crate",
+    "x": 0,
+    "y": 3,
+    "rot": 0,
+    "variant": 0,
+    "color": null
+   }
+  ],
+  "loose": "crate",
+  "desc": "Bancada, ferramentas, quadro de planos"
+ },
+ {
+  "id": "lar",
+  "name": "Lar",
+  "area": "Casa e vida prática",
+  "emblem": "pot",
+  "model": "chale",
+  "color": "telha",
+  "wall": "cream",
+  "floor": "planks",
+  "shelves": [
+   "Manutenção",
+   "Compras",
+   "Documentos",
+   "Informações úteis"
+  ],
+  "decor": [
+   {
+    "catalogId": "stove",
+    "x": 1,
+    "y": 6,
+    "rot": 0,
+    "variant": 0,
+    "color": "ferro"
+   },
+   {
+    "catalogId": "plant",
+    "x": 4,
+    "y": 0,
+    "rot": 0,
+    "variant": 0,
+    "color": null
+   },
+   {
+    "catalogId": "window",
+    "x": 8,
+    "y": 0,
+    "rot": 0,
+    "variant": 0,
+    "color": "ocre"
+   },
+   {
+    "catalogId": "rug",
+    "x": 5,
+    "y": 3,
+    "rot": 0,
+    "variant": 0,
+    "color": "vinho"
+   },
+   {
+    "catalogId": "chair",
+    "x": 6,
+    "y": 5,
+    "rot": 2,
+    "variant": 0,
+    "color": null
+   },
+   {
+    "catalogId": "armchair",
+    "x": 13,
+    "y": 3,
+    "rot": 0,
+    "variant": 0,
+    "color": "verde"
+   },
+   {
+    "catalogId": "cat",
+    "x": 9,
+    "y": 6,
+    "rot": 0,
+    "variant": 0,
+    "color": "laranja"
+   },
+   {
+    "catalogId": "sidetable",
+    "x": 13,
+    "y": 4,
+    "rot": 0,
+    "variant": 1,
+    "color": null
+   }
+  ],
+  "loose": "basket",
+  "desc": "Cozinha, sala acolhedora"
+ },
+ {
+  "id": "tesouraria",
+  "name": "Tesouraria",
+  "area": "Dinheiro e patrimônio",
+  "emblem": "coin",
+  "model": "empena",
+  "color": "vinho",
+  "wall": "green",
+  "floor": "checker",
+  "shelves": [
+   "Contas",
+   "Orçamento",
+   "Investimentos",
+   "Comprovantes"
+  ],
+  "decor": [
+   {
+    "catalogId": "counter",
+    "x": 1,
+    "y": 6,
+    "rot": 0,
+    "variant": 0,
+    "color": "nogueira"
+   },
+   {
+    "catalogId": "safe",
+    "x": 9,
+    "y": 0,
+    "rot": 0,
+    "variant": 0,
+    "color": "ferro"
+   },
+   {
+    "catalogId": "clock",
+    "x": 5,
+    "y": 0,
+    "rot": 0,
+    "variant": 0,
+    "color": "dourado"
+   },
+   {
+    "catalogId": "rug",
+    "x": 5,
+    "y": 3,
+    "rot": 0,
+    "variant": 0,
+    "color": "verde"
+   },
+   {
+    "catalogId": "chair",
+    "x": 6,
+    "y": 5,
+    "rot": 2,
+    "variant": 0,
+    "color": "nogueira"
+   },
+   {
+    "catalogId": "candle",
+    "x": 4,
+    "y": 0,
+    "rot": 0,
+    "variant": 0,
+    "color": "dourado"
+   },
+   {
+    "catalogId": "plant",
+    "x": 13,
+    "y": 6,
+    "rot": 0,
+    "variant": 1,
+    "color": "branco"
+   }
+  ],
+  "loose": "papers",
+  "desc": "Balcão, cofre, livros-caixa"
+ },
+ {
+  "id": "ginasio",
+  "name": "Ginásio",
+  "area": "Saúde e energia",
+  "emblem": "heart",
+  "model": "madeira",
+  "color": "musgo",
+  "wall": "sky",
+  "floor": "planks",
+  "shelves": [
+   "Rotinas",
+   "Consultas",
+   "Exames",
+   "Hábitos"
+  ],
+  "decor": [
+   {
+    "catalogId": "weights",
+    "x": 1,
+    "y": 7,
+    "rot": 0,
+    "variant": 0,
+    "color": null
+   },
+   {
+    "catalogId": "bed",
+    "x": 13,
+    "y": 2,
+    "rot": 0,
+    "variant": 0,
+    "color": "azul"
+   },
+   {
+    "catalogId": "mat",
+    "x": 2,
+    "y": 4,
+    "rot": 0,
+    "variant": 0,
+    "color": "verde"
+   },
+   {
+    "catalogId": "window",
+    "x": 8,
+    "y": 0,
+    "rot": 0,
+    "variant": 1,
+    "color": "azul"
+   },
+   {
+    "catalogId": "plant",
+    "x": 4,
+    "y": 0,
+    "rot": 0,
+    "variant": 1,
+    "color": "azul"
+   },
+   {
+    "catalogId": "rug",
+    "x": 5,
+    "y": 3,
+    "rot": 0,
+    "variant": 1,
+    "color": "azul"
+   },
+   {
+    "catalogId": "chair",
+    "x": 6,
+    "y": 5,
+    "rot": 2,
+    "variant": 0,
+    "color": "pinho"
+   },
+   {
+    "catalogId": "plant",
+    "x": 13,
+    "y": 7,
+    "rot": 0,
+    "variant": 3,
+    "color": null
+   }
+  ],
+  "loose": "bag",
+  "desc": "Equipamentos, espaço de descanso"
+ },
+ {
+  "id": "hospedaria",
+  "name": "Hospedaria",
+  "area": "Pessoas e relacionamentos",
+  "emblem": "mug",
+  "model": "palha",
+  "color": "palha",
+  "wall": "wine",
+  "floor": "planks",
+  "shelves": [
+   "Pessoas",
+   "Eventos",
+   "Datas especiais"
+  ],
+  "decor": [
+   {
+    "catalogId": "fireplace",
+    "x": 12,
+    "y": 0,
+    "rot": 0,
+    "variant": 0,
+    "color": "pedra"
+   },
+   {
+    "catalogId": "longtable",
+    "x": 1,
+    "y": 6,
+    "rot": 0,
+    "variant": 0,
+    "color": "carvalho"
+   },
+   {
+    "catalogId": "armchair",
+    "x": 12,
+    "y": 3,
+    "rot": 0,
+    "variant": 0,
+    "color": "vinho"
+   },
+   {
+    "catalogId": "armchair",
+    "x": 12,
+    "y": 5,
+    "rot": 0,
+    "variant": 0,
+    "color": "vinho"
+   },
+   {
+    "catalogId": "rug",
+    "x": 5,
+    "y": 3,
+    "rot": 0,
+    "variant": 0,
+    "color": "ocre"
+   },
+   {
+    "catalogId": "chair",
+    "x": 6,
+    "y": 5,
+    "rot": 2,
+    "variant": 0,
+    "color": null
+   },
+   {
+    "catalogId": "candle",
+    "x": 4,
+    "y": 0,
+    "rot": 0,
+    "variant": 0,
+    "color": "dourado"
+   },
+   {
+    "catalogId": "barrel",
+    "x": 13,
+    "y": 7,
+    "rot": 0,
+    "variant": 0,
+    "color": null
+   },
+   {
+    "catalogId": "banner",
+    "x": 8,
+    "y": 0,
+    "rot": 0,
+    "variant": 0,
+    "color": "vinho"
+   }
+  ],
+  "loose": "parcel",
+  "desc": "Lareira, mesa comprida, poltronas"
+ },
+ {
+  "id": "atelie",
+  "name": "Ateliê",
+  "area": "Estudos e criação",
+  "emblem": "brush",
+  "model": "empena",
+  "color": "telha",
+  "wall": "lilac",
+  "floor": "planks",
+  "shelves": [
+   "Cursos",
+   "Livros",
+   "Ideias",
+   "Criações"
+  ],
+  "decor": [
+   {
+    "catalogId": "easel",
+    "x": 1,
+    "y": 6,
+    "rot": 0,
+    "variant": 0,
+    "color": null
+   },
+   {
+    "catalogId": "easel",
+    "x": 3,
+    "y": 7,
+    "rot": 0,
+    "variant": 2,
+    "color": null
+   },
+   {
+    "catalogId": "wallmap",
+    "x": 8,
+    "y": 0,
+    "rot": 0,
+    "variant": 0,
+    "color": null
+   },
+   {
+    "catalogId": "globe",
+    "x": 4,
+    "y": 0,
+    "rot": 0,
+    "variant": 0,
+    "color": null
+   },
+   {
+    "catalogId": "bookpile",
+    "x": 0,
+    "y": 3,
+    "rot": 0,
+    "variant": 1,
+    "color": null
+   },
+   {
+    "catalogId": "rug",
+    "x": 5,
+    "y": 3,
+    "rot": 0,
+    "variant": 0,
+    "color": "rosa"
+   },
+   {
+    "catalogId": "chair",
+    "x": 6,
+    "y": 5,
+    "rot": 2,
+    "variant": 0,
+    "color": "cerejeira"
+   },
+   {
+    "catalogId": "plant",
+    "x": 13,
+    "y": 7,
+    "rot": 0,
+    "variant": 2,
+    "color": null
+   },
+   {
+    "catalogId": "bookpile",
+    "x": 12,
+    "y": 4,
+    "rot": 0,
+    "variant": 0,
+    "color": null
+   }
+  ],
+  "loose": "scroll",
+  "desc": "Cavaletes, mapas, pilhas de livros"
+ },
+ {
+  "id": "simples",
+  "name": "Simples",
+  "area": "Uma área só sua",
+  "emblem": "leaf",
+  "model": "chale",
+  "color": "telha",
+  "wall": "cream",
+  "floor": "planks",
+  "shelves": [
+   "Estante"
+  ],
+  "decor": [
+   {
+    "catalogId": "rug",
+    "x": 5,
+    "y": 3,
+    "rot": 0,
+    "variant": 0,
+    "color": "ocre"
+   },
+   {
+    "catalogId": "chair",
+    "x": 6,
+    "y": 5,
+    "rot": 2,
+    "variant": 0,
+    "color": null
+   },
+   {
+    "catalogId": "plant",
+    "x": 4,
+    "y": 0,
+    "rot": 0,
+    "variant": 0,
+    "color": null
+   },
+   {
+    "catalogId": "lamp",
+    "x": 9,
+    "y": 0,
+    "rot": 0,
+    "variant": 0,
+    "color": null
+   }
+  ],
+  "loose": "crate",
+  "desc": "Um interior neutro para começar"
+ }
+]

@@ -1,0 +1,33 @@
+{
+  "name": "palacio-mental",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Palácio Mental — o Recanto: organização pessoal em um mundo 2D editável.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "e2e": "node e2e/run.mjs"
+  },
+  "dependencies": {
+    "idb": "^8.0.4",
+    "immer": "^11.2.10",
+    "phaser": "^4.2.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "zustand": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "fake-indexeddb": "^6.2.8",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.7",
+    "vitest": "^5.1.0"
+  }
+}

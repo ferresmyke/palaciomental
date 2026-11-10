@@ -1,0 +1,70 @@
+[
+ {
+  "id": "chale",
+  "name": "Chalé de telhas",
+  "desc": "Enxaimel com telhado de telha e chaminé.",
+  "walls": "timber",
+  "roof": "tile",
+  "colors": [
+   "telha",
+   "ardosia",
+   "musgo",
+   "palha",
+   "vinho"
+  ]
+ },
+ {
+  "id": "empena",
+  "name": "Casa de empena",
+  "desc": "Frontão alto de enxaimel, com sótão.",
+  "walls": "timber",
+  "roof": "gable",
+  "colors": [
+   "telha",
+   "ardosia",
+   "musgo",
+   "palha",
+   "vinho"
+  ]
+ },
+ {
+  "id": "palha",
+  "name": "Cabana de palha",
+  "desc": "Paredes claras e telhado de palha.",
+  "walls": "plaster",
+  "roof": "thatch",
+  "colors": [
+   "palha",
+   "musgo",
+   "telha"
+  ]
+ },
+ {
+  "id": "pedra",
+  "name": "Casa de pedra",
+  "desc": "Pedra aparente e telhado de ardósia.",
+  "walls": "stone",
+  "roof": "tile",
+  "colors": [
+   "telha",
+   "ardosia",
+   "musgo",
+   "palha",
+   "vinho"
+  ]
+ },
+ {
+  "id": "madeira",
+  "name": "Casa de madeira",
+  "desc": "Tábuas de madeira e varanda.",
+  "walls": "wood",
+  "roof": "gable",
+  "colors": [
+   "telha",
+   "ardosia",
+   "musgo",
+   "palha",
+   "vinho"
+  ]
+ }
+]

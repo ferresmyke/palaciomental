@@ -182,6 +182,8 @@ export interface CamOptions {
   maxZoom: number;
   /** Margem em volta do mundo quando ele é menor que a tela. */
   pad?: number;
+  /** Permite afastar até ver o mundo inteiro, mantendo-o centralizado. */
+  fitWhole?: boolean;
   /** A cena avisa se um gesto já está em uso (arrastando um objeto, por exemplo). */
   busy?: () => boolean;
   onChange?: () => void;
@@ -257,12 +259,26 @@ export class CamControl {
     const pad = this.o.pad ?? 0;
     const cover = Math.max(cam.width / this.o.worldW, cam.height / this.o.worldH);
     const contain = Math.min(cam.width / (this.o.worldW + pad * 2), cam.height / (this.o.worldH + pad * 2));
-    this.minZoom = pad ? contain * 0.9 : cover;
+    this.minZoom = pad ? contain * 0.9 : this.o.fitWhole ? Math.min(cover, contain * 0.8) : cover;
     if (pad) cam.removeBounds();
-    else cam.setBounds(0, 0, this.o.worldW, this.o.worldH);
+    else this.updateBounds();
     if (cam.zoom < this.minZoom) cam.setZoom(this.minZoom);
     this.o.onChange?.();
   };
+
+  /** Limites da câmera: o mundo, ou uma área maior e centrada quando o mundo cabe inteiro na tela. */
+  updateBounds(): void {
+    if (this.o.pad) return;
+    const cam = this.scene.cameras.main;
+    const W = this.o.worldW;
+    const H = this.o.worldH;
+    // Folga lateral para os painéis: o mapa pode correr para o lado sem ficar escondido atrás deles.
+    const slack = this.o.fitWhole && cam.width > 760 ? 400 / cam.zoom : 0;
+    const bw = Math.max(W, cam.width / cam.zoom) + slack * 2;
+    const bh = Math.max(H, cam.height / cam.zoom);
+    const b = cam.getBounds();
+    if (Math.abs(b.width - bw) > 0.5 || Math.abs(b.height - bh) > 0.5 || !cam.useBounds) cam.setBounds((W - bw) / 2, (H - bh) / 2, bw, bh);
+  }
 
   zoomAt(sx: number, sy: number, factor: number): void {
     const cam = this.scene.cameras.main;
@@ -270,6 +286,7 @@ export class CamControl {
     const z = Phaser.Math.Clamp(cam.zoom * factor, this.minZoom, Math.max(this.minZoom, this.o.maxZoom));
     if (z === cam.zoom) return;
     cam.setZoom(z);
+    this.updateBounds();
     cam.preRender();
     const after = cam.getWorldPoint(sx, sy);
     cam.scrollX += before.x - after.x;

@@ -144,7 +144,7 @@ export function MesaPanel() {
   const [tab, setTab] = useState<'tarefas' | 'lugares' | 'objetivos'>('tarefas');
   const [houseId, setHouseId] = useState<ID | null>(null);
   const [tagId, setTagId] = useState<ID | null>(null);
-  const [open, setOpen] = useState<Record<AgendaSection, boolean>>({ today: true, week: true, overdue: true, urgent: false, doing: true, waiting: false, done: false });
+  const [open, setOpen] = useState<Record<AgendaSection, boolean>>({ today: true, week: true, overdue: true, urgent: false, doing: true, waiting: true, done: false });
   const ag = useMemo(() => agenda(db, now, { houseId, tagId }), [db, now, houseId, tagId]);
   const tags = Object.values(db.tags);
   const goals = liveGoals(db);

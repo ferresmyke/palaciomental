@@ -3,7 +3,9 @@ import * as ops from '@/domain/ops';
 import { IndexedDbRepository } from '@/persistence/idb';
 import { MemoryRepository } from '@/persistence/memory';
 import type { Repository } from '@/persistence/repository';
-import { dbStore, exec, initStore } from '@/store/db';
+import { search } from '@/domain/search';
+import * as sel from '@/domain/selectors';
+import { dbStore, exec, getRepo, initStore } from '@/store/db';
 import { gameApi } from '@/store/gameApi';
 import * as nav from '@/store/nav';
 import { ui, uiStore } from '@/store/ui';
@@ -72,7 +74,8 @@ export function App() {
         console.error(e);
         if (alive) setState('error');
       });
-    Object.assign(window, { __pm: { ops, exec, dbStore, uiStore, ui, nav, gameApi } });
+    // Gancho de inspeção usado pelos testes ponta a ponta (somente leitura e comandos públicos).
+    Object.assign(window, { __pm: { ops, sel, search, exec, dbStore, uiStore, ui, nav, gameApi, repo: getRepo } });
     return () => {
       alive = false;
     };

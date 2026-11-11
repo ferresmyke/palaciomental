@@ -23,6 +23,8 @@ export function mountGame(parent: HTMLElement): () => void {
     render: { smoothPixelArt: true, antialias: false, powerPreference: 'high-performance' },
     fps: { target: 60 },
   });
+  const hook = (window as unknown as { __pm?: Record<string, unknown> }).__pm;
+  if (hook) hook.game = game;
   game.scene.add('city', CityScene);
   game.scene.add('house', InteriorScene);
   game.scene.add('observatory', ObservatoryScene);

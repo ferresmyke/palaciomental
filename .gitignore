@@ -7,3 +7,5 @@ dist
 e2e/shots
 coverage
 *.log
+e2e/last-run.json
+e2e/backup-teste.json

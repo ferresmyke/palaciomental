@@ -372,3 +372,8 @@ select.field-input { padding-right: 24px; }
   .mini { min-width: 34px; height: 34px; }
   .catalog-item { cursor: pointer; }
 }
+/* Com pouco zoom, nomes de móveis ficam compactos para não se amontoarem. */
+.world-labels[data-zoom='far'] .world-label.furn { font-size: 10px; padding: 0 4px 1px; gap: 3px; }
+.world-labels[data-zoom='far'] .world-label.furn > span:first-child { max-width: 64px; overflow: hidden; text-overflow: ellipsis; }
+.world-labels[data-zoom='far'] .world-label.furn .world-badge { font-size: 9px; padding: 0 3px; }
+.world-label.furn.hover > span:first-child, .world-label.furn.highlight > span:first-child, .world-label.furn.selected > span:first-child { max-width: none !important; }

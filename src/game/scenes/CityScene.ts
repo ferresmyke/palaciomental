@@ -123,7 +123,7 @@ export class CityScene extends Phaser.Scene {
     this.avatar.maxTrip = 1.9;
 
     this.labels = new Labels(this);
-    this.cam = new CamControl(this, { worldW: W, worldH: H, maxZoom: 5, busy: () => !!this.drag, onChange: () => (this.viewClock = 0) });
+    this.cam = new CamControl(this, { worldW: W, worldH: H, maxZoom: 5, fitWhole: true, busy: () => !!this.drag, onChange: () => (this.viewClock = 0) });
     const cam = this.cameras.main;
     cam.setBackgroundColor(0x24402c);
     const startZoom = Phaser.Math.Clamp(Math.min(cam.width / (36 * TILE), cam.height / (21 * TILE)), this.cam.minZoom, 4);
@@ -132,6 +132,7 @@ export class CityScene extends Phaser.Scene {
 
     this.sync(true);
     this.buildVillagers();
+    if (ui.get().movingHouseId) this.showLots(0);
     this.bindInput();
 
     const unsubDb = dbStore.subscribe(() => this.sync(false));
@@ -144,6 +145,7 @@ export class CityScene extends Phaser.Scene {
       }
       if (s.lightPreview !== prevUi.lightPreview) this.applyLight();
       if (s.highlight !== prevUi.highlight && s.highlight?.kind === 'house') this.api.focusHouse(s.highlight.id);
+      if (s.movingHouseId && s.movingHouseId !== prevUi.movingHouseId) this.showLots();
       prevUi = s;
     });
     const offDrop = gameBus.on('reform:drop', (e) => this.externalPointer(e.clientX, e.clientY, true));
@@ -738,6 +740,22 @@ export class CityScene extends Phaser.Scene {
     }
   }
 
+  /** Afasta a câmera até mostrar todos os terrenos (ao escolher onde pôr uma casa). */
+  private showLots(ms = 450): void {
+    const lots = this.plan.lots;
+    const x0 = Math.min(...lots.map((l) => l.x)) * TILE;
+    const x1 = Math.max(...lots.map((l) => l.x + l.w)) * TILE;
+    const y0 = Math.min(...lots.map((l) => l.y)) * TILE;
+    const y1 = Math.max(...lots.map((l) => l.y + l.h)) * TILE;
+    const cam = this.cameras.main;
+    const usableW = cam.width - (cam.width > 760 ? 360 : 0);
+    const usableH = cam.height - (cam.width > 760 ? 120 : cam.height * 0.5);
+    const zoom = Math.min(usableW / (x1 - x0 + 32), usableH / (y1 - y0 + 32));
+    const cx = (x0 + x1) / 2 + (cam.width - usableW) / 2 / zoom;
+    const cy = (y0 + y1) / 2 + (cam.width > 760 ? 0 : (cam.height - usableH) / 2 / zoom);
+    this.cam.focus(cx, cy, zoom, ms);
+  }
+
   // ───────────────────────────── API de navegação ─────────────────────────────
 
   private walkable(): Uint8Array {
@@ -811,6 +829,7 @@ export class CityScene extends Phaser.Scene {
     // Tempo real (sem suavização): a viagem dura o mesmo em máquinas lentas.
     const delta = Math.min(250, this.game.loop.rawDelta || smoothed);
     this.avatar.update(delta);
+    this.cam.updateBounds();
     const spots = this.data.get('spots') as Cell[] | undefined;
     for (const v of this.villagers) {
       v.w.update(delta);

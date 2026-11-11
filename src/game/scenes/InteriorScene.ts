@@ -97,7 +97,8 @@ export class InteriorScene extends Phaser.Scene {
     const look = db.meta.world?.settings.avatar ?? { skin: 1, hair: 2, hairStyle: 0, shirt: 1, pants: 0 };
     this.avatar = new Walker(this, tex(this, fixedSprite.person(look)), { x: 7, y: 8 }, DEPTH.floor);
     this.avatar.face('up');
-    this.avatar.speed = 70;
+    this.avatar.speed = 80;
+    this.avatar.maxTrip = 0.9;
 
     this.labels = new Labels(this);
     const cam = this.cameras.main;
@@ -149,10 +150,11 @@ export class InteriorScene extends Phaser.Scene {
     const st = ui.get();
     const side = st.panels.length > 0 || st.reform;
     const usableW = narrow || !side ? cam.width : Math.max(360, cam.width - 400);
-    const z = Math.min(usableW / (ROOM_W * TILE + 28), (cam.height - (narrow ? 200 : 120)) / (ROOM_H * TILE + WALL_H + 24));
+    const z = Math.min(usableW / (ROOM_W * TILE + 28), (cam.height - (narrow ? 230 : 190)) / (ROOM_H * TILE + WALL_H + 24));
     cam.setZoom(Phaser.Math.Clamp(z, 1.2, 6));
     const cx = (ROOM_W * TILE) / 2 + (cam.width - usableW) / 2 / cam.zoom;
-    cam.centerOn(cx, (ROOM_H * TILE - WALL_H) / 2 + (narrow ? 24 / cam.zoom : 6));
+    // Reserva espaço em cima para o resumo da casa e embaixo para os controles.
+    cam.centerOn(cx, (ROOM_H * TILE - WALL_H) / 2 + ROOM_PAD / 2 - (narrow ? 10 : 22) / cam.zoom);
   };
 
   // ───────────────────────────── Sincronização ─────────────────────────────
@@ -692,7 +694,7 @@ export class InteriorScene extends Phaser.Scene {
         this.avatar.face('down');
         await new Promise<void>((r) => {
           this.cameras.main.fadeOut(160, 20, 14, 10);
-          this.time.delayedCall(170, () => r());
+          window.setTimeout(r, 170);
         });
       }
       return ok;
@@ -701,7 +703,9 @@ export class InteriorScene extends Phaser.Scene {
     panBy: (dx, dy) => this.cam.panBy(dx, dy),
   };
 
-  update(_time: number, delta: number): void {
+  update(_time: number, smoothed: number): void {
+    // Tempo real (sem suavização): a viagem dura o mesmo em máquinas lentas.
+    const delta = Math.min(250, this.game.loop.rawDelta || smoothed);
     if (!this.avatar) return;
     this.avatar.update(delta);
     this.labels.update();

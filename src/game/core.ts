@@ -349,10 +349,21 @@ export class Walker {
     this.stand();
   }
 
+  /** Duração máxima de uma viagem (s): a narrativa nunca atrasa uma consulta rápida. */
+  maxTrip = 0;
+  private baseSpeed = 0;
+
   /** Anda pela rota; resolve true ao chegar e false se for interrompido. */
   walk(route: Cell[], instant = false): Promise<boolean> {
     this.cancel();
     if (!route.length) return Promise.resolve(true);
+    if (!this.baseSpeed) this.baseSpeed = this.speed;
+    this.speed = this.baseSpeed;
+    if (this.maxTrip > 0) {
+      let len = 0;
+      for (let i = 1; i < route.length; i++) len += Math.hypot(route[i].x - route[i - 1].x, route[i].y - route[i - 1].y) * TILE;
+      this.speed = Math.max(this.baseSpeed, len / this.maxTrip);
+    }
     if (instant || prefersReducedMotion()) {
       this.teleport(route[route.length - 1]);
       return Promise.resolve(true);

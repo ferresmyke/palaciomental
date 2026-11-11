@@ -119,6 +119,8 @@ export class CityScene extends Phaser.Scene {
     const look = db.meta.world?.settings.avatar ?? { skin: 1, hair: 2, hairStyle: 0, shirt: 1, pants: 0 };
     this.avatar = new Walker(this, tex(this, fixedSprite.person(look)), start);
     this.avatar.face('down');
+    this.avatar.speed = 96;
+    this.avatar.maxTrip = 1.9;
 
     this.labels = new Labels(this);
     this.cam = new CamControl(this, { worldW: W, worldH: H, maxZoom: 5, busy: () => !!this.drag, onChange: () => (this.viewClock = 0) });
@@ -783,10 +785,11 @@ export class CityScene extends Phaser.Scene {
         cam.zoomTo(Math.min(5, Math.max(cam.zoom * 1.5, 3.2)), 420, 'Sine.easeInOut', true);
         this.avatar.sprite.setVisible(false);
         this.tweens.add({ targets: v.roof, alpha: 0, duration: 380 });
-        this.time.delayedCall(430, () => {
-          cam.fadeOut(140, 20, 14, 10);
-          this.time.delayedCall(150, () => resolve());
-        });
+        // Temporizadores reais: a entrada nunca fica presa se a taxa de quadros cair.
+        window.setTimeout(() => {
+          if (this.scene.isActive()) cam.fadeOut(140, 20, 14, 10);
+          window.setTimeout(resolve, 150);
+        }, 430);
       }),
     focusCell: (x, y) => this.cam.focus(x * TILE + TILE / 2, y * TILE + TILE / 2),
     focusHouse: (houseId) => {
@@ -804,7 +807,9 @@ export class CityScene extends Phaser.Scene {
 
   // ───────────────────────────── Laço ─────────────────────────────
 
-  update(_time: number, delta: number): void {
+  update(_time: number, smoothed: number): void {
+    // Tempo real (sem suavização): a viagem dura o mesmo em máquinas lentas.
+    const delta = Math.min(250, this.game.loop.rawDelta || smoothed);
     this.avatar.update(delta);
     const spots = this.data.get('spots') as Cell[] | undefined;
     for (const v of this.villagers) {

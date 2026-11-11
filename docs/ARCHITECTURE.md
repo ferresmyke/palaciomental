@@ -92,5 +92,5 @@ A sincronização não foi implementada: privacidade e propriedade dos dados exi
 - `tests/domain.test.ts`: endereço permanente, referências sem cópia, progresso, migração de modelos,
   grade e colisão, integridade ao excluir, lixeira, arrumação, Mesa do Dia, Ronda, busca, planta e caminho.
 - `tests/store.test.ts`: desfazer/refazer, persistência em IndexedDB, backup.
-- `e2e/run.mjs`: 15 cenários ponta a ponta cobrindo os critérios de aceitação, inclusive tela de celular
+- `e2e/run.mjs`: 14 cenários ponta a ponta cobrindo os critérios de aceitação, inclusive tela de celular
   e verificação de erros no console.

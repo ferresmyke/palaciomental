@@ -51,3 +51,8 @@ Documentação técnica e de produto em [`docs/`](docs). Regras permanentes em [
 Toda a arte (casas, móveis, vegetação, personagens, céu, ícones) é **original**, desenhada por código
 em `src/game/art/` para este projeto. Não há imagens de terceiros. Bibliotecas: React, Phaser, Vite,
 Zustand, Immer, idb (todas sob licença MIT). Fonte da interface: a do sistema (sem download).
+
+## Capturas
+
+Em [`docs/capturas/`](docs/capturas): a cidade ao fim da tarde, a praça, a Mesa do Dia, um livro de
+pessoa na Hospedaria, o interior da Tesouraria, o Modo Reforma, o Observatório e a cidade à noite.

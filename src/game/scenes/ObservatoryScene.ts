@@ -17,7 +17,7 @@ import { CamControl, Labels, prefersReducedMotion, tex, type LabelSpec } from '.
 
 export const SKY_H = 270;
 const COL_W = 104;
-const BANDS: Record<Horizon, [number, number]> = { long: [34, 84], year: [98, 142], quarter: [156, 192] };
+const BANDS: Record<Horizon, [number, number]> = { long: [40, 86], year: [100, 144], quarter: [156, 194] };
 
 export interface StarPos {
   id: ID;
@@ -27,6 +27,8 @@ export interface StarPos {
   state: GoalState;
   ratio: number;
   title: string;
+  /** Posição dentro da faixa: alterna o nome acima e abaixo da estrela. */
+  slot: number;
 }
 
 export interface SkyLayout {
@@ -51,9 +53,10 @@ export function layoutSky(db: Db): SkyLayout {
         const h = hashString(g.id);
         const spread = Math.min(26, (step - 24) / Math.max(1, list.length));
         const x = col.x + (k - (list.length - 1) / 2) * spread + ((h % 9) - 4);
-        const y = y0 + ((h >> 4) % (y1 - y0));
+        // Estrelas vizinhas ficam em alturas diferentes para os nomes não se cobrirem.
+        const y = y0 + ((k * 21 + ((h >> 4) % 5)) % (y1 - y0));
         const p = goalProgress(db, g);
-        stars.push({ id: g.id, x, y, constellationId: col.id, state: p.state, ratio: p.ratio, title: g.title });
+        stars.push({ id: g.id, x, y, constellationId: col.id, state: p.state, ratio: p.ratio, title: g.title, slot: k });
       });
     }
   return { width, columns, stars };
@@ -177,8 +180,20 @@ export class ObservatoryScene extends Phaser.Scene {
     this.labels = new Labels(this);
     const cam = this.cameras.main;
     cam.setBackgroundColor(0x0a0e2a);
-    this.cam = new CamControl(this, { worldW: this.width, worldH: SKY_H, maxZoom: 8 });
-    cam.setZoom(this.cam.minZoom);
+    // Céu e varanda continuam além da área útil, para a cena caber inteira em qualquer tela.
+    const ext = this.add.graphics().setDepth(-11);
+    ext.fillStyle(0x0a0e2a, 1).fillRect(-2000, -1600, this.width + 4000, 1600);
+    ext.fillStyle(0x0a0e2a, 1).fillRect(-2000, 0, 2000, 234);
+    ext.fillStyle(0x0a0e2a, 1).fillRect(this.width, 0, 2000, 234);
+    ext.fillStyle(0x1e2130, 1).fillRect(-2000, 234, this.width + 4000, 1600);
+    ext.fillStyle(0x33374c, 1).fillRect(-2000, 234, this.width + 4000, 3);
+    for (let i = 0; i < 900; i++) {
+      const x = -2000 + ((i * 7919) % (this.width + 4000));
+      const y = -1600 + ((i * 104729) % 1600);
+      ext.fillStyle(i % 9 === 0 ? 0xffffff : 0x8a96d0, 1).fillRect(x, y, 1, 1);
+    }
+    this.cam = new CamControl(this, { worldW: this.width, worldH: SKY_H, maxZoom: 8, pad: 6 });
+    cam.setZoom(Math.max(this.cam.minZoom, Math.min(cam.width / (this.width + 12), cam.height / (SKY_H + 12))));
     cam.centerOn(this.width / 2, SKY_H / 2);
     this.sync(true);
 
@@ -304,11 +319,12 @@ export class ObservatoryScene extends Phaser.Scene {
     const s = ui.get();
     const open = s.panels.find((p) => p.type === 'goal');
     const selected = open?.type === 'goal' ? open.id : null;
-    for (const col of this.layout.columns) specs[`c:${col.id}`] = { text: col.name, x: col.x, y: 24, cls: 'constellation' };
+    for (const col of this.layout.columns) specs[`c:${col.id}`] = { text: col.name, x: col.x, y: 20, cls: 'constellation' };
     for (const st of this.layout.stars) {
       const hot = this.hover === st.id || selected === st.id || s.highlight?.id === st.id;
-      const mark = st.state === 'nopath' ? '◌ sem caminho' : st.state === 'dormant' ? '☾ adormecida' : st.state === 'done' ? '✓' : `${Math.round(st.ratio * 100)}%`;
-      specs[`g:${st.id}`] = { text: st.title, x: st.x, y: st.y + 26, cls: `star ${st.state}${hot ? ' hover' : ''}`, badge: mark };
+      const mark = st.state === 'nopath' ? '◌' : st.state === 'dormant' ? '☾' : st.state === 'done' ? '✓' : `${Math.round(st.ratio * 100)}%`;
+      const full = `${st.title}: ${st.state === 'nopath' ? 'sem caminho' : st.state === 'dormant' ? 'adormecida' : st.state === 'done' ? 'alcançada' : `${Math.round(st.ratio * 100)}%`}`;
+      specs[`g:${st.id}`] = { text: st.title, x: st.x, y: st.y, anchor: st.x > this.width - 130 ? 'left' : 'right', title: full, cls: `star ${st.state}${hot ? ' hover' : ''}`, badge: mark };
     }
     specs['b:long'] = { text: 'Longo prazo', x: 34, y: 62, cls: 'band' };
     specs['b:year'] = { text: 'Este ano', x: 34, y: 124, cls: 'band' };

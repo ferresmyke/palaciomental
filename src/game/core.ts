@@ -95,6 +95,10 @@ export interface LabelSpec {
   badge?: string;
   badgeTitle?: string;
   onClick?: () => void;
+  /** 'top' (padrão): centrado acima do ponto. 'right': à direita, na mesma altura. */
+  anchor?: 'top' | 'right' | 'left';
+  /** Texto completo para leitores de tela e dica, quando o rótulo é encurtado. */
+  title?: string;
 }
 
 /** Camada de rótulos por cima do canvas. É DOM da cena, não React. */
@@ -118,7 +122,7 @@ export class Labels {
         this.items.delete(id);
       }
     for (const [id, spec] of Object.entries(specs)) {
-      const sig = `${spec.text}|${spec.cls ?? ''}|${spec.badge ?? ''}|${spec.badgeTitle ?? ''}|${spec.onClick ? 1 : 0}`;
+      const sig = `${spec.text}|${spec.title ?? ''}|${spec.cls ?? ''}|${spec.badge ?? ''}|${spec.badgeTitle ?? ''}|${spec.onClick ? 1 : 0}`;
       let item = this.items.get(id);
       if (!item) {
         const node = document.createElement(spec.onClick ? 'button' : 'div');
@@ -130,6 +134,8 @@ export class Labels {
       if (item.sig !== sig) {
         item.sig = sig;
         item.node.className = `world-label ${spec.cls ?? ''}`;
+        if (spec.title) item.node.title = spec.title;
+        else item.node.removeAttribute('title');
         item.node.textContent = '';
         const name = document.createElement('span');
         name.textContent = spec.text;
@@ -157,7 +163,7 @@ export class Labels {
       const sy = (spec.y - cy) * z + cam.height / 2;
       const hidden = sx < -80 || sy < -30 || sx > cam.width + 80 || sy > cam.height + 30;
       node.style.display = hidden ? 'none' : '';
-      if (!hidden) node.style.transform = `translate(${Math.round(sx)}px, ${Math.round(sy)}px) translate(-50%, -100%)`;
+      if (!hidden) node.style.transform = `translate(${Math.round(sx)}px, ${Math.round(sy)}px) ${spec.anchor === 'right' ? 'translate(10px, -50%)' : spec.anchor === 'left' ? 'translate(calc(-100% - 10px), -50%)' : 'translate(-50%, -100%)'}`;
     }
     this.el.dataset.zoom = z < 1.6 ? 'far' : z < 2.6 ? 'mid' : 'near';
   }

@@ -20,6 +20,8 @@ button.world-label { pointer-events: auto; cursor: pointer; }
 .world-label.door { background: rgba(51, 35, 26, 0.9); color: var(--paper-200); }
 .world-label.constellation { background: transparent; border: 0; box-shadow: none; color: #c9d3ff; font: italic 15px var(--font-title); letter-spacing: 0.04em; text-shadow: 0 1px 2px #000; }
 .world-label.band { background: transparent; border: 0; box-shadow: none; color: rgba(190, 200, 240, 0.55); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; transform-origin: left; }
+.world-label.star > span:first-child { max-width: 150px; overflow: hidden; text-overflow: ellipsis; }
+.world-label.star.hover > span:first-child { max-width: 320px; }
 .world-label.star { background: rgba(10, 14, 42, 0.55); border-color: rgba(160, 175, 235, 0.35); color: #e8ecff; box-shadow: none; font-size: 12px; font-weight: 500; }
 .world-label.star.dormant { opacity: 0.55; }
 .world-label.star.hover { background: rgba(30, 36, 84, 0.95); border-color: #c9d3ff; z-index: 3; }

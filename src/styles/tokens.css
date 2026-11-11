@@ -1,0 +1,31 @@
+/* Design tokens do Recanto: madeira, pergaminho e luz quente. Ver docs/DESIGN_SYSTEM.md. */
+:root {
+  --ink: #2a1c18;
+  --ink-soft: #4a362c;
+  --wood-900: #241812;
+  --wood-800: #33231a;
+  --wood-700: #47301f;
+  --wood-600: #5e4028;
+  --wood-500: #7a5534;
+  --wood-400: #9a7146;
+  --paper-100: #fbf5e4;
+  --paper-200: #f3e9cf;
+  --paper-300: #e8dbb9;
+  --paper-400: #d6c59c;
+  --paper-500: #b9a67c;
+  --gold: #e6c24a;
+  --gold-deep: #b98a2c;
+  --leaf: #4f7f45;
+  --leaf-deep: #2f5a38;
+  --water: #3b86b0;
+  --wine: #8a2f3d;
+  --alert: #b3402e;
+  --alert-soft: #f4d6c8;
+  --ok: #3f7a4f;
+  --shadow: 0 6px 0 rgba(26, 18, 14, 0.35), 0 14px 30px rgba(10, 6, 4, 0.45);
+  --radius: 6px;
+  --font: 'Atkinson Hyperlegible', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --font-title: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', serif;
+  --panel-w: 400px;
+  --hud-gap: 10px;
+}

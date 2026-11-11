@@ -1,0 +1,30 @@
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+body { background: #17110f; color: var(--ink); font-family: var(--font); font-size: 15px; line-height: 1.4; overflow: hidden; -webkit-font-smoothing: antialiased; }
+button, input, select, textarea { font: inherit; color: inherit; }
+.boot { height: 100%; display: grid; place-items: center; color: var(--paper-300); font-family: var(--font-title); font-size: 20px; }
+.app { position: fixed; inset: 0; }
+.world { position: absolute; inset: 0; overflow: hidden; touch-action: none; }
+.world canvas { display: block; }
+
+/* Rótulos do mundo (DOM da cena) */
+.world-labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.world-label { position: absolute; left: 0; top: 0; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; padding: 2px 8px 3px; border-radius: 4px; border: 1px solid rgba(26, 18, 14, 0.75); background: rgba(251, 245, 228, 0.93); color: var(--ink); font: 600 13px/1.2 var(--font); box-shadow: 0 2px 0 rgba(26, 18, 14, 0.45); will-change: transform; }
+button.world-label { pointer-events: auto; cursor: pointer; }
+.world-label.house { font-family: var(--font-title); font-size: 14px; }
+.world-label.hover, .world-label.selected, .world-label.highlight { background: #fff9e0; border-color: var(--gold-deep); box-shadow: 0 0 0 2px rgba(230, 194, 74, 0.7), 0 2px 0 rgba(26, 18, 14, 0.45); z-index: 2; }
+.world-label.site { background: rgba(51, 35, 26, 0.9); color: var(--paper-200); }
+.world-label.furn { font-size: 12px; padding: 1px 6px 2px; background: rgba(51, 35, 26, 0.86); color: var(--paper-200); font-weight: 500; }
+.world-label.furn.essential { opacity: 0.82; }
+.world-label.lot { background: rgba(79, 127, 69, 0.95); color: #fff; border-color: #1f3d24; }
+.world-label.door { background: rgba(51, 35, 26, 0.9); color: var(--paper-200); }
+.world-label.constellation { background: transparent; border: 0; box-shadow: none; color: #c9d3ff; font: italic 15px var(--font-title); letter-spacing: 0.04em; text-shadow: 0 1px 2px #000; }
+.world-label.band { background: transparent; border: 0; box-shadow: none; color: rgba(190, 200, 240, 0.55); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; transform-origin: left; }
+.world-label.star { background: rgba(10, 14, 42, 0.55); border-color: rgba(160, 175, 235, 0.35); color: #e8ecff; box-shadow: none; font-size: 12px; font-weight: 500; }
+.world-label.star.dormant { opacity: 0.55; }
+.world-label.star.hover { background: rgba(30, 36, 84, 0.95); border-color: #c9d3ff; z-index: 3; }
+.world-badge { display: inline-block; padding: 0 5px; border-radius: 3px; background: var(--wood-700); color: var(--paper-100); font: 600 11px/1.5 var(--font); }
+.world-label.urgencia .world-badge { background: var(--alert); }
+.world-label.site .world-badge, .world-label.furn .world-badge { background: var(--paper-300); color: var(--ink); }
+.world-label.star .world-badge { background: rgba(160, 175, 235, 0.22); color: #dfe5ff; }
+.world-labels[data-zoom='far'] .world-label.minor, .world-labels[data-zoom='far'] .world-label.furn.essential { display: none !important; }

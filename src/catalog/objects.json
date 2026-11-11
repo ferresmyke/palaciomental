@@ -915,8 +915,8 @@
   "category": "tapetes",
   "kind": "decor",
   "mount": "rug",
-  "w": 4,
-  "h": 3,
+  "w": 5,
+  "h": 4,
   "recipe": "rug",
   "variants": [
    "Bordado",

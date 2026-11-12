@@ -1,11 +1,13 @@
 import { emptyDb, TABLES } from '@/domain/types';
 import type { Db, ID } from '@/domain/types';
-import type { Change, Repository, StoredBlob } from './repository';
+import type { Change, Repository, Snapshot, StoredBlob } from './repository';
 
 /** Repositório em memória: usado em testes e como reserva quando o IndexedDB não existe. */
 export class MemoryRepository implements Repository {
   private tables = new Map<string, Map<ID, unknown>>();
   private blobs = new Map<ID, StoredBlob>();
+  private snaps = new Map<ID, Snapshot>();
+  private handles = new Map<string, unknown>();
 
   constructor() {
     for (const t of TABLES) this.tables.set(t, new Map());
@@ -47,5 +49,27 @@ export class MemoryRepository implements Repository {
   }
   async clearBlobs(): Promise<void> {
     this.blobs.clear();
+  }
+
+  async putSnapshot(s: Snapshot): Promise<void> {
+    this.snaps.set(s.id, s);
+  }
+  async listSnapshots(): Promise<Omit<Snapshot, 'json'>[]> {
+    return [...this.snaps.values()].sort((a, b) => b.at - a.at).map(({ json: _json, ...rest }) => rest);
+  }
+  async getSnapshot(id: ID): Promise<Snapshot | undefined> {
+    return this.snaps.get(id);
+  }
+  async deleteSnapshot(id: ID): Promise<void> {
+    this.snaps.delete(id);
+  }
+  async putHandle(key: string, value: unknown): Promise<void> {
+    this.handles.set(key, value);
+  }
+  async getHandle(key: string): Promise<unknown | undefined> {
+    return this.handles.get(key);
+  }
+  async deleteHandle(key: string): Promise<void> {
+    this.handles.delete(key);
   }
 }

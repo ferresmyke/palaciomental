@@ -11,12 +11,13 @@ O app existe para guardar e encontrar informações com facilidade. A narrativa 
 - `npm run dev` — servidor de desenvolvimento (http://127.0.0.1:5173). `sheet.html` mostra toda a arte.
 - `npm test` — testes de domínio e persistência (Vitest).
 - `npm run e2e` — testes ponta a ponta dos critérios de aceitação (Playwright + Chromium). `-- --only=nome` roda um cenário; `-- --shots` grava capturas em `e2e/shots/`.
-- `npm run typecheck` e `npm run build`.
+- `npm run typecheck` e `npm run build`. `npm run build:single` gera `versao-pronta/Recanto.html` (arquivo único que abre com duplo clique); regenere e comite ao entregar uma versão.
 
 ## Arquitetura (resumo; detalhes em docs/ARCHITECTURE.md)
 - `src/domain/` — dados e regras puras (sem React/Phaser). Toda mudança passa por uma função de `ops.ts`.
 - `src/store/` — `db.ts` executa operações como comandos reversíveis (patches do immer) e grava só o que mudou; `ui.ts` é o estado de interface; `nav.ts` é a viagem; `gameApi.ts` é o contrato com as cenas.
-- `src/persistence/` — repositório (IndexedDB / memória) e backup.
+- `src/persistence/` — repositório (IndexedDB / memória), backup e cópias automáticas (snapshots).
+- `src/integrations/obsidian/` — notas Markdown ↔ livros, acesso à pasta do Vault e sincronização em três vias. Não importa React nem Phaser.
 - `src/game/` — Phaser 4: arte procedural (`art/`), utilidades (`core.ts`) e três cenas (Cidade, Interior, Observatório). As cenas só refletem o modelo.
 - `src/ui/` — React: HUD, painéis, Modo Reforma, abertura.
 - React e Phaser não se importam: conversam pela loja (`dbStore`, `uiStore`) e por `gameApi`/`gameBus`.
@@ -28,6 +29,8 @@ O app existe para guardar e encontrar informações com facilidade. A narrativa 
 - Novos objetos do catálogo entram em `src/catalog/objects.json`. Se usarem uma receita de sprite existente, não precisam de código.
 - Toda arte é original e gerada por código (`src/game/art`). Use apenas as rampas de `palette.ts`.
 - Textos de interface em português do Brasil. Toda cor vem acompanhada de texto e símbolo.
+- **Mudou o esquema de dados? Aumente `SCHEMA_VERSION`, escreva a migração em `domain/migrations.ts` (não destrutiva) e um teste.** Nunca quebre dados antigos.
+- A integração com o Obsidian **nunca apaga notas** e **nunca sobrescreve sem guardar a outra versão** (ver `docs/OBSIDIAN.md`). Novas conversões precisam de teste de ida e volta.
 - Rode `npm test` e `npm run typecheck` antes de cada commit; rode `npm run e2e` antes de declarar uma funcionalidade pronta.
 - Commits locais de checkpoints funcionais. **Não publicar em repositório remoto sem autorização do responsável pelo produto.**
 
@@ -64,4 +67,4 @@ O app existe para guardar e encontrar informações com facilidade. A narrativa 
 - Exclusão definitiva sem confirmação e sem possibilidade de recuperar pela lixeira.
 
 ## Decisões que dependem do responsável pelo produto
-Sincronização remota, criptografia/Cofre, multiusuário e publicação do código. Ver `docs/DECISIONS.md`.
+Sincronização remota das estruturas, criptografia/Cofre e multiusuário. Ver `docs/DECISIONS.md` e `docs/AVALIACAO_RELATORIO.md`. O código está publicado em github.com/ferresmyke/palaciomental (privado).

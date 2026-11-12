@@ -5,7 +5,18 @@ cada área é uma **casa**, cada casa tem **móveis**, cada móvel guarda **livr
 projetos, notas...). Tarefas, prazos e objetivos convivem com esse mapa, e um **modo lista**
 completo (a Mesa do Dia) dá acesso a tudo sem andar pela cidade.
 
-## Como executar
+## Abrir sem instalar nada (versão pronta)
+
+Baixe o repositório (**Code › Download ZIP**), descompacte e dê duplo clique em **`versao-pronta/Recanto.html`** (Chrome ou Edge).
+Veja `versao-pronta/COMO ABRIR.txt` e o roteiro `docs/GUIA_DE_TESTE.md`. Na primeira tela, escolha **Explorar com exemplos**.
+
+## Novidades da versão 2
+- **Obsidian**: cada livro vira uma nota Markdown na pasta do seu Vault, nos dois sentidos, com conflitos resolvidos sem perda (`docs/OBSIDIAN.md`).
+- **Mapa de Conexões**: veja como os livros se relacionam (referências e `[[links]]`).
+- **Tarefas que se repetem** e **cópias de segurança automáticas** com restauração.
+- Migrações de dados, verificação de integridade e dados de exemplo.
+
+## Como executar (desenvolvimento)
 
 Requisitos: Node.js 20 ou mais recente.
 
@@ -39,7 +50,8 @@ ocultar o avatar e fixar a luz (por padrão ela segue o relógio).
 
 ## Desenvolvimento
 
-- `npm test` — testes de domínio e persistência.
+- `npm test` — testes de domínio, persistência e Obsidian.
+- `npm run build:single` — gera `versao-pronta/Recanto.html` (arquivo único).
 - `npm run e2e` — testes ponta a ponta dos critérios de aceitação (requer Chromium do Playwright).
 - `npm run typecheck`.
 - `http://127.0.0.1:5173/sheet.html` — folha com toda a arte procedural.

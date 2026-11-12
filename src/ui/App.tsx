@@ -8,6 +8,7 @@ import * as sel from '@/domain/selectors';
 import { dbStore, exec, getRepo, initStore } from '@/store/db';
 import { gameApi } from '@/store/gameApi';
 import * as nav from '@/store/nav';
+import * as vaultApi from '@/store/vault';
 import { ui, uiStore } from '@/store/ui';
 import { GameCanvas } from './GameCanvas';
 import { Hud } from './Hud';
@@ -65,6 +66,7 @@ export function App() {
     void openRepository()
       .then(async ({ repo, persistent }) => {
         await initStore(repo);
+        void vaultApi.initVault();
         if (!alive) return;
         setState('ready');
         if (!persistent) ui.toast('Este navegador não permitiu guardar dados. O que você fizer vale só nesta sessão.', 'error');
@@ -75,7 +77,7 @@ export function App() {
         if (alive) setState('error');
       });
     // Gancho de inspeção usado pelos testes ponta a ponta (somente leitura e comandos públicos).
-    Object.assign(window, { __pm: { ops, sel, search, exec, dbStore, uiStore, ui, nav, gameApi, repo: getRepo } });
+    Object.assign(window, { __pm: { ops, sel, search, exec, dbStore, uiStore, ui, nav, gameApi, repo: getRepo, vault: vaultApi } });
     return () => {
       alive = false;
     };

@@ -2,6 +2,10 @@
 
 Definições completas em `src/domain/types.ts`. Tudo é serializável e independe da representação gráfica.
 
+## Versão do esquema
+`meta.world.schemaVersion` (hoje **2**). A versão 2 acrescentou: `books[].note` (ligação com a nota do Obsidian), `attachments[].vaultPath`,
+`tasks[].repeat` (repetição), `meta.world.vault` (pasta ligada) e `meta.world.lastBackupAt`. Migrações em `domain/migrations.ts`; ver `ARCHITECTURE.md`.
+
 ## Hierarquia
 ```
 RECANTO (meta.world: nome, configurações, ampliação da cidade)
@@ -25,13 +29,13 @@ OBSERVATÓRIO
 | `houses` | nome, `themeId`, `modelId`, `color`, `lotId`, `hidden`, `order`, `trash?` |
 | `furniture` | móvel lógico: `houseId`, nome, `kind` (container/essential), `containerType` ou `role`, ordenação |
 | `placements` | layout: `scope` (`city` ou id da casa), `catalogId`, `x`, `y`, `rot`, `variant`, `color`, `furnitureId?`, `imageId?` |
-| `books` | título, `templateId`, `houseId`, `furnitureId`, `order`, `fields`, `blocks`, capa, `project?`, `pinnedOpen`, `archivedAt` |
+| `books` | título, `templateId`, `houseId`, `furnitureId`, `order`, `fields`, `blocks`, capa, `project?`, `pinnedOpen`, `archivedAt`, `note?` (ligação com o Obsidian: caminho atual, pasta esperada, hashes da última sincronização) |
 | `templates` | nome, `behavior` (none/project/note), `fields` (com `hidden`), capa padrão, `version` |
-| `tasks` | título, descrição, casa, livro, `onDesk`, status, prioridade, etiquetas, datas, checklist, notas, links, `refs` |
+| `tasks` | título, descrição, casa, livro, `onDesk`, status, prioridade, etiquetas, datas, `repeat` (every + interval), checklist, notas, links, `refs` |
 | `tags` | nome e cor |
 | `goals` | título, descrição, horizonte, constelação, `projectIds`, `dormant` |
 | `constellations` | nome, `houseId` (constelação padrão da casa) ou `null` |
-| `attachments` | metadados do anexo; o conteúdo fica no store `blobs` |
+| `attachments` | metadados do anexo (`vaultPath` quando já está no Vault); o conteúdo fica no store `blobs` |
 
 ## Endereço lógico
 `Recanto › Casa › Móvel › Livro`. Depende só de `houseId` e `furnitureId`. Mover o móvel no espaço
@@ -95,6 +99,15 @@ e múltipla, checklist, arquivo, imagem, referência a outro livro. Cada altera�
   na primeira página.
 - Modelos de sistema: Nota, Projeto, Pessoa, Contrato, Comprovante, Consulta, Rotina, Informação útil.
   Nota e Projeto não podem ser excluídos (sustentam funções do app), mas aceitam campos.
+
+## Tarefas que se repetem
+`repeat = { every: 'day'|'week'|'month'|'year', interval }`. Ao concluir (`status → done`), `spawnNextOccurrence` cria uma nova tarefa idêntica
+(checklist zerada) com prazo **estritamente futuro**: parte do prazo anterior (ou de hoje) e avança o intervalo até passar de hoje.
+Meses curtos usam o último dia (31/01 + 1 mês = 28/02). A tarefa concluída fica no histórico com `repeat = null`, então reabrir e concluir de novo não duplica.
+
+## Conexões
+Derivadas, não guardadas (`domain/links.ts`): um livro cita outro por **bloco de referência**, **campo de referência** ou **`[[título]]`** em
+textos, títulos e checklists (comparação sem acento nem caixa; em empate de título, prefere a mesma casa). Renomear um livro atualiza os `[[links]]`.
 
 ## Lixeira
 Excluir marca `trash = { deletedAt, batchId }`. Itens excluídos juntos (uma casa e seu conteúdo)

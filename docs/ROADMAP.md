@@ -19,11 +19,26 @@
 - **Fase 7 · Refinamento**: 43 testes de domínio/persistência e 14 cenários ponta a ponta; celular;
   acessibilidade; desempenho com listas paginadas.
 
-## Próximos passos sugeridos
+## Versão 2 (12–13/11/2026): proteção, Obsidian, conexões, uso diário
+- Migrações não destrutivas, integridade, cópias automáticas e restauração.
+- Obsidian bidirecional por acesso direto à pasta; conflitos sem perda; índice e guia para agentes de IA.
+- Mapa de Conexões e conexões por livro; tarefas que se repetem; dados de exemplo; versão em arquivo único.
+
+## Próximas etapas (ordem sugerida pelo relatório, ajustada)
+1. **Uso real do Obsidian por algumas semanas** (em cópia do Vault primeiro): ajustar conversões e relatório conforme o que aparecer.
+2. **Editor do Mundo**: transformar `cityPlan()` em uma planta serializada e versionada (terreno, ruas, rio, praça, pontes), com migração e
+   restauração do padrão; ferramentas de pintar caminhos/terreno no Modo Reforma. Depois, **Ateliê de Aparência** (paletas, temas, iluminação).
+3. **Mapa de Conexões 2**: filtros, Mapas de Conteúdo (MOCs) gerados, relações tipadas (pessoa ↔ projeto ↔ reunião).
+4. **Camada de IA opcional** (consulta ao Vault por agentes; MCP).
+5. **Sincronização entre aparelhos** das estruturas (Supabase ou equivalente), com decisão prévia de privacidade e conflitos.
+6. **Plugin do Obsidian / app desktop (Tauri)** se o acesso por navegador se mostrar limitante.
+
+## Próximos passos menores
 - Revisão de usabilidade com uso real por algumas semanas (o que mais se busca, o que fica solto).
 - Mais variações de arte por tema (objetos temáticos extras, estações do ano).
 - Edição de datas recorrentes além de anuais (mensais, semanais) e lembretes opcionais não intrusivos.
 - Importação de dados de outros apps (CSV de tarefas, contatos vCard).
+- Repetição por dias da semana (ex.: seg/qua/sex) e lembretes opcionais, sem culpa.
 - Ícone e instalação como PWA (uso offline já é natural, por ser local-first).
 
 ## Dependem de decisão estratégica

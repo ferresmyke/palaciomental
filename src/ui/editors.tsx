@@ -244,6 +244,7 @@ export function TaskRow({ task, showAddress, travel }: { task: Task; showAddress
             </span>
           )}
           {task.dueDate && <span>◷ {humanDate(task.dueDate, now)}</span>}
+          {task.repeat && <span title="Se repete">↻</span>}
           {task.checklist.length > 0 && (
             <span>
               ☑ {task.checklist.filter((c) => c.done).length}/{task.checklist.length}

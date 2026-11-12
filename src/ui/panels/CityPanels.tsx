@@ -241,6 +241,12 @@ export function QuadroPanel() {
         <button className="btn ghost" onClick={() => ui.push({ type: 'goals' })}>
           Objetivos
         </button>
+        <button className="btn ghost" onClick={() => ui.push({ type: 'map' })}>
+          Conexões
+        </button>
+        <button className="btn ghost" onClick={() => ui.push({ type: 'obsidian' })}>
+          Obsidian
+        </button>
       </div>
       <Section title="Casas" count={houses.length}>
         {!houses.length && <Empty>Nenhuma casa ainda.</Empty>}

@@ -33,6 +33,8 @@ export type Panel =
   | { type: 'deleteTemplate'; id: ID }
   | { type: 'deleteConstellation'; id: ID }
   | { type: 'restoreDest'; items: { kind: 'book' | 'task'; id: ID }[] }
+  | { type: 'obsidian' }
+  | { type: 'map'; id?: ID }
   | { type: 'help' };
 
 export interface Toast {

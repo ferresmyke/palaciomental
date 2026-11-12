@@ -4,7 +4,10 @@
  */
 import { useState } from 'react';
 import { EMBLEMS } from '@/domain/catalog';
+import { bookLinks } from '@/domain/links';
 import * as ops from '@/domain/ops';
+import { renderNote } from '@/integrations/obsidian/markdown';
+import { obsidianLink } from '@/store/vault';
 import { bookAddress, bookTasks, liveGoals, liveTemplates, projectProgress } from '@/domain/selectors';
 import { FIELD_TYPE_LABEL, STATUS_LABEL, STATUS_SYMBOL, STATUSES, type Block, type BlockType, type Book, type ChecklistItem, type FieldDef, type FieldValue, type ID, type TaskStatus } from '@/domain/types';
 import { humanDate, nextOccurrence } from '@/domain/util';
@@ -230,6 +233,35 @@ function AddBlock({ bookId, index }: { bookId: ID; index?: number }) {
   );
 }
 
+function Connections({ id }: { id: ID }) {
+  const db = useDb();
+  const l = bookLinks(db, id);
+  const total = l.out.length + l.back.length + l.tasks.length;
+  return (
+    <Section title="Conexões" count={total} aside={total > 0 ? <button className="link small" onClick={() => ui.push({ type: 'map', id })}>Ver no mapa</button> : undefined}>
+      {total === 0 && <Empty>Nenhuma conexão ainda. Insira uma “Referência a livro” nas páginas ou escreva [[Nome de outro livro]] em um texto.</Empty>}
+      {l.out.length > 0 && <p className="field-label">Este livro cita</p>}
+      {l.out.map((b) => (
+        <button key={b.id} className="row pick" onClick={() => ui.push({ type: 'book', id: b.id })}>
+          <span className="row-title">{b.title}</span>
+          <span className="row-meta">{bookAddress(db, b).parts.slice(1, -1).join(' › ')}</span>
+        </button>
+      ))}
+      {l.back.length > 0 && <p className="field-label">Citado por</p>}
+      {l.back.map((b) => (
+        <button key={b.id} className="row pick" onClick={() => ui.push({ type: 'book', id: b.id })}>
+          <span className="row-title">{b.title}</span>
+          <span className="row-meta">{bookAddress(db, b).parts.slice(1, -1).join(' › ')}</span>
+        </button>
+      ))}
+      {l.tasks.length > 0 && <p className="field-label">Tarefas que o referenciam</p>}
+      {l.tasks.map((t) => (
+        <TaskRow key={t.id} task={t} />
+      ))}
+    </Section>
+  );
+}
+
 export function BookPanel({ id }: { id: ID }) {
   const db = useDb();
   const now = useNow();
@@ -263,6 +295,8 @@ export function BookPanel({ id }: { id: ID }) {
           {book.houseId && !book.archivedAt && <MenuItem onClick={() => run(book.pinnedOpen ? 'Tirar da mesa' : 'Deixar na mesa', (d) => ops.updateBook(d, id, { pinnedOpen: !book.pinnedOpen }))}>{book.pinnedOpen ? 'Tirar da mesa' : 'Deixar aberto na mesa'}</MenuItem>}
           <MenuItem onClick={() => runWithUndo(book.archivedAt ? 'Desarquivar livro' : 'Arquivar livro', (d) => ops.archiveBook(d, id, !book.archivedAt), book.archivedAt ? 'Livro de volta ao lugar.' : 'Livro arquivado no baú.')}>{book.archivedAt ? 'Desarquivar' : 'Arquivar no baú'}</MenuItem>
           {!book.houseId && !book.project && <MenuItem onClick={() => { const t = run('Transformar em tarefa', (d) => ops.bookToTask(d, id)); if (t) ui.open({ type: 'task', id: t }); }}>Transformar em tarefa</MenuItem>}
+          <MenuItem onClick={() => { const text = renderNote(db, book, { attachmentPath: (aid) => db.attachments[aid]?.vaultPath ?? null, now }).text; void navigator.clipboard?.writeText(text).then(() => ui.toast('Livro copiado como Markdown. É só colar onde quiser, inclusive em uma conversa com uma IA.', 'ok'), () => ui.toast('O navegador não permitiu copiar.', 'error')); }}>Copiar como Markdown</MenuItem>
+          <MenuItem onClick={() => ui.push({ type: 'map', id })}>Ver no Mapa de Conexões</MenuItem>
           <MenuItem danger onClick={() => { runWithUndo('Excluir livro', (d) => ops.deleteBook(d, id), 'Livro na lixeira por 30 dias.'); ui.back(); }}>Excluir</MenuItem>
         </Menu>
       }
@@ -284,6 +318,11 @@ export function BookPanel({ id }: { id: ID }) {
             {book.archivedAt && <Chip tone="muted" symbol="▣">Arquivado</Chip>}
             {!book.furnitureId && !book.archivedAt && <Chip tone="gold" symbol="▫" onClick={() => ui.push({ type: 'store', kind: 'book', id })}>Solto: guardar em…</Chip>}
             {book.pinnedOpen && <Chip symbol="◐">Aberto na mesa</Chip>}
+            {book.note && obsidianLink(book.note.path) && (
+              <a className="chip" href={obsidianLink(book.note.path)!} title={`Nota: ${book.note.path}`}>
+                ✎ Abrir no Obsidian
+              </a>
+            )}
             <button className="link small" onClick={() => ui.push({ type: 'templates', id: book.templateId })}>
               Editar modelo
             </button>
@@ -380,6 +419,8 @@ export function BookPanel({ id }: { id: ID }) {
         ))}
         <QuickAdd placeholder="Nova tarefa neste livro" label="Nova tarefa neste livro" onAdd={(title) => run('Nova tarefa', (d) => ops.createTask(d, { title, bookId: id }))} />
       </Section>
+
+      <Connections id={id} />
 
       <Section title="Páginas" count={book.blocks.length}>
         {book.blocks.length === 0 && <Empty>Este livro ainda não tem páginas. Insira um bloco para começar.</Empty>}

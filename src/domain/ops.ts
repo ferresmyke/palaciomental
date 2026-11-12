@@ -23,6 +23,7 @@ import type {
   ID,
   Placement,
   Priority,
+  Repeat,
   Rot,
   Settings,
   SortMode,
@@ -31,7 +32,7 @@ import type {
   Template,
 } from './types';
 import { CITY_SCOPE, CONTAINER_LABEL } from './types';
-import { newId } from './util';
+import { newId, parseISODate, today, toISODate } from './util';
 
 /** Relógio substituível em testes. */
 export const clock = { now: (): number => Date.now() };
@@ -72,12 +73,12 @@ export function expandCity(db: Db): void {
 
 const LOT_PREFERENCE = ['B3', 'B4', 'B2', 'B5', 'A3', 'A4', 'B1', 'B6', 'A2', 'A5', 'A1', 'A6'];
 
-export function completeOnboarding(db: Db, opts: { name: string; mode: 'six' | 'zero' }): void {
+export function completeOnboarding(db: Db, opts: { name: string; mode: 'six' | 'zero' | 'demo' }): void {
   ensureSeed(db, clock.now());
   const w = world(db);
   w.name = opts.name.trim() || 'Recanto';
   w.onboarded = true;
-  if (opts.mode === 'six')
+  if (opts.mode !== 'zero')
     for (const themeId of STARTER_THEMES) {
       const theme = themeById(themeId);
       createHouse(db, { name: theme.name, themeId });
@@ -588,7 +589,9 @@ export function updateBook(
   const b = book(db, id);
   if (patch.title !== undefined) {
     if (!patch.title.trim()) fail('O livro precisa de um título.');
+    const old = b.title;
     b.title = patch.title.trim();
+    if (old !== b.title) renameWikilinks(db, old, b.title);
   }
   if (patch.pinnedOpen !== undefined) b.pinnedOpen = patch.pinnedOpen;
   if (patch.cover) Object.assign(b.cover, patch.cover);
@@ -597,6 +600,17 @@ export function updateBook(
     if (b.project.status === 'done' && !b.cover.ribbon) b.cover.ribbon = 'dourado';
   }
   touch(b);
+}
+
+/** Mantém os links [[assim]] funcionando quando um livro é renomeado. */
+function renameWikilinks(db: Db, oldTitle: string, newTitle: string): void {
+  const esc = oldTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const re = new RegExp(`\\[\\[${esc}((?:#[^\\]|]*)?(?:\\|[^\\]]*)?)\\]\\]`, 'g');
+  const safe = newTitle.replace(/[\]|[]/g, '');
+  const fix = (text: string) => text.replace(re, (_m, rest: string) => `[[${safe}${rest}]]`);
+  for (const o of Object.values(db.books)) {
+    for (const bl of o.blocks) if (bl.type === 'text' || bl.type === 'heading') bl.text = fix(bl.text);
+  }
 }
 
 export function setBookField(db: Db, id: ID, fieldId: ID, value: FieldValue): void {
@@ -1068,7 +1082,65 @@ export function updateTask(db: Db, id: ID, patch: TaskPatch): void {
     t.title = title.trim();
   }
   Object.assign(t, rest);
+  const wasDone = t.status === 'done';
   if (status !== undefined) setStatusInternal(t, status);
+  if (status === 'done' && !wasDone && t.repeat) spawnNextOccurrence(db, t);
+  touch(t);
+}
+
+/** Próxima data de uma repetição. Meses curtos usam o último dia (31/01 + 1 mês = 28/02). */
+export function nextRepeatDate(from: string, rep: Repeat): string {
+  const d = parseISODate(from);
+  const n = Math.max(1, Math.floor(rep.interval) || 1);
+  if (rep.every === 'day') d.setDate(d.getDate() + n);
+  else if (rep.every === 'week') d.setDate(d.getDate() + 7 * n);
+  else {
+    const day = d.getDate();
+    d.setDate(1);
+    if (rep.every === 'month') d.setMonth(d.getMonth() + n);
+    else d.setFullYear(d.getFullYear() + n);
+    d.setDate(Math.min(day, new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()));
+  }
+  return toISODate(d);
+}
+
+/** Ao concluir uma tarefa que se repete, cria a próxima: sempre em uma data futura. */
+function spawnNextOccurrence(db: Db, t: Task): ID {
+  const rep = t.repeat!;
+  const now = clock.now();
+  const base = t.dueDate ?? today(now);
+  let next = nextRepeatDate(base, rep);
+  for (let i = 0; i < 2000 && next <= today(now); i++) next = nextRepeatDate(next, rep);
+  const gap = t.dueDate && t.startDate ? Math.round((parseISODate(t.dueDate).getTime() - parseISODate(t.startDate).getTime()) / 86400000) : null;
+  const id = newId('tf');
+  const nextStart = gap !== null ? toISODate(new Date(parseISODate(next).getTime() - gap * 86400000)) : null;
+  db.tasks[id] = {
+    ...t,
+    id,
+    status: 'pending',
+    dueDate: next,
+    startDate: nextStart,
+    checklist: t.checklist.map((c) => ({ ...c, id: newId('ck'), done: false })),
+    links: t.links.map((l) => ({ ...l, id: newId('lk') })),
+    tagIds: [...t.tagIds],
+    refs: [...t.refs],
+    repeat: { ...rep },
+    createdAt: now,
+    updatedAt: now,
+    completedAt: null,
+    archivedAt: null,
+    trash: undefined,
+  };
+  delete db.tasks[id].trash;
+  // A ocorrência concluída fica no histórico e não se repete de novo.
+  t.repeat = null;
+  return id;
+}
+
+export function setTaskRepeat(db: Db, id: ID, repeat: Repeat | null): void {
+  const t = task(db, id);
+  t.repeat = repeat ? { every: repeat.every, interval: Math.max(1, Math.floor(repeat.interval) || 1) } : null;
+  if (repeat && !t.dueDate) t.dueDate = today(clock.now());
   touch(t);
 }
 

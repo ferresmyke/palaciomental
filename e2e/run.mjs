@@ -19,7 +19,8 @@ if (shots) mkdirSync(shotDir, { recursive: true });
 const server = await createServer({ root, logLevel: 'error', server: { port: 0, host: '127.0.0.1' } });
 await server.listen();
 const url = server.resolvedUrls.local[0];
-const browser = await chromium.launch({ args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
+// Locale UTF-8: sem isso, o armazenamento virtual do Chromium no Linux recusa nomes com acento.
+const browser = await chromium.launch({ env: { ...process.env, LANG: 'C.UTF-8', LC_ALL: 'C.UTF-8' }, args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
 
 const results = [];
 const consoleErrors = [];
@@ -136,6 +137,21 @@ await scenario('abertura, nome da cidade e começar do zero', async (open) => {
   check(await t.page.isVisible('.breadcrumbs >> text=Recanto da Ana'), 'breadcrumb sem o nome da cidade');
   await t.reload();
   check(!(await t.page.isVisible('.onboarding')), 'abertura reaparece após recarregar');
+  await t.ctx.close();
+});
+
+await scenario('começar explorando com exemplos', async (open) => {
+  const t = await open();
+  await t.page.click('text=Pular');
+  await t.page.click('text=Explorar com exemplos');
+  await t.page.click('text=Entrar no Recanto');
+  await t.page.waitForSelector('.hud');
+  const db = await t.db();
+  check(Object.values(db.houses).length === 6 && Object.values(db.books).length >= 25, 'o exemplo não preencheu as casas');
+  check(Object.values(db.tasks).some((x) => x.repeat) && Object.values(db.goals).length === 5, 'o exemplo não trouxe repetições e objetivos');
+  await t.page.keyboard.press('m');
+  const text = await t.page.textContent('.panel');
+  check(text.includes('Declarar o imposto de renda') && text.includes('Pagar o aluguel'), 'a Mesa do Dia do exemplo está vazia');
   await t.ctx.close();
 });
 
@@ -661,6 +677,159 @@ await scenario('exportar e importar todos os dados', async (open) => {
   const { unlinkSync } = await import('node:fs');
   unlinkSync(file);
   await u.ctx.close();
+});
+
+await scenario('Obsidian: ligar a pasta, criar notas, editar nos dois lados e resolver conflito sem perda', async (open) => {
+  const t = await open();
+  await t.start('six');
+  await t.reduceMotion();
+  const lar = await t.id('houses', "x.name==='Lar'");
+  const shelf = await t.id('furniture', "x.name==='Documentos'");
+  const bid = await t.eval(([f]) => window.__pm.exec('Livro', (d) => {
+    const id = window.__pm.ops.createBook(d, { title: 'Contrato de aluguel', templateId: 'tpl_contract', furnitureId: f });
+    window.__pm.ops.setBookField(d, id, 'c_party', 'Imobiliária Sol');
+    window.__pm.ops.addBlock(d, id, 'text', undefined, { text: 'Reajuste anual pelo IGP-M.' });
+    return id;
+  }), [shelf]);
+  // pasta virtual (a mesma API da pasta real do computador)
+  await t.eval(async () => {
+    const root = await navigator.storage.getDirectory();
+    try { await root.removeEntry('vault-e2e', { recursive: true }); } catch {}
+    window.__vh = await root.getDirectoryHandle('vault-e2e', { create: true });
+  });
+  const read = (p) => t.eval(async (path) => {
+    let cur = window.__vh;
+    const parts = path.split('/');
+    for (const seg of parts.slice(0, -1)) cur = await cur.getDirectoryHandle(seg);
+    return (await (await cur.getFileHandle(parts.at(-1))).getFile()).text();
+  }, p);
+  const write = (p, text) => t.eval(async ([path, body]) => {
+    let cur = window.__vh;
+    const parts = path.split('/');
+    for (const seg of parts.slice(0, -1)) cur = await cur.getDirectoryHandle(seg, { create: true });
+    const w = await (await cur.getFileHandle(parts.at(-1), { create: true })).createWritable();
+    await w.write(body); await w.close();
+  }, [p, text]);
+  /** Sincroniza e espera de verdade: se já houver uma em andamento, tenta de novo. */
+  const sync = async () => {
+    for (let i = 0; i < 20; i++) {
+      if (await t.eval(() => window.__pm.vault.syncNow().then((r) => !!r))) return;
+      await t.wait(400);
+    }
+    throw new Fail('a sincronização não terminou');
+  };
+  await t.page.click('button[aria-label=Configurações]');
+  await t.page.click('.panel >> text=Obsidian');
+  check(await t.page.isVisible('text=Escolher a pasta do Obsidian'), 'painel do Obsidian sem o botão de escolher a pasta');
+  await t.eval(() => window.__pm.vault.connectHandle(window.__vh, 'Meu Vault'));
+  await t.page.waitForSelector('text=Conectado');
+  const path = '10 - Áreas da Vida/Lar/Documentos/Contrato de aluguel.md';
+  let md = await read(path);
+  check(md.includes(`recanto_id: ${bid}`) && md.includes('tipo: Contrato') && md.includes('Com quem: Imobiliária Sol') && md.includes('Reajuste anual pelo IGP-M.'), 'nota criada incorretamente');
+  check((await read('90 - Sistema/Recanto/ÍNDICE.md')).includes('[[Contrato de aluguel]]'), 'índice ausente');
+  check(await t.page.isVisible('.panel >> text=nota(s) criada(s)'), 'relatório da sincronização não exibido');
+  await t.shot('08-obsidian');
+  // edição no Obsidian → Recanto (pela interface: Sincronizar agora)
+  await write(path, md.replace('Reajuste anual pelo IGP-M.', 'Reajuste anual pelo IPCA.\n\n- [ ] Assinar aditivo').replace('Com quem: Imobiliária Sol', 'Com quem: Imobiliária Lua'));
+  const before = await t.eval(() => window.__pm.vault.vaultStore.getState().lastSync);
+  await t.page.click('.panel >> text=Sincronizar agora');
+  await t.page.waitForFunction((b) => window.__pm.vault.vaultStore.getState().lastSync > b, before, { timeout: 15000 });
+  let db = await t.db();
+  check(db.books[bid].fields['c_party'] === 'Imobiliária Lua', 'campo editado no Obsidian não chegou ao Recanto');
+  check(db.books[bid].blocks.map((b) => b.type).join() === 'text,checklist', 'blocos editados no Obsidian não chegaram');
+  // edição no Recanto → Obsidian
+  await t.eval(([id]) => window.__pm.exec('Edita', (d) => window.__pm.ops.addBlock(d, id, 'heading', undefined, { text: 'Anexos' })), [bid]);
+  await sync();
+  md = await read(path);
+  check(md.includes('## Anexos'), 'edição do Recanto não chegou ao Obsidian');
+  // conflito: os dois lados mudam
+  await write(path, md.replace('Reajuste anual pelo IPCA.', 'TEXTO DO OBSIDIAN'));
+  await t.eval(([id]) => window.__pm.exec('Edita', (d) => window.__pm.ops.updateBlock(d, id, window.__pm.dbStore.getState().db.books[id].blocks[0].id, { text: 'TEXTO DO RECANTO' })), [bid]);
+  await sync();
+  db = await t.db();
+  const first = db.books[bid].blocks[0];
+  check(first.text === 'TEXTO DO OBSIDIAN', 'em conflito, a versão do Obsidian deveria vencer');
+  const report = await t.eval(() => window.__pm.vault.vaultStore.getState().report);
+  check(report.conflicts.length === 1, 'conflito não registrado');
+  check((await read(report.conflicts[0].copyPath)).includes('TEXTO DO RECANTO'), 'a versão do Recanto não foi guardada na cópia de conflito');
+  await t.page.waitForSelector('.panel >> text=Conflitos (nada foi perdido)');
+  // nota nova criada no Obsidian vira livro no Correio
+  await write('00 - Caixa de Entrada/Ideia vinda do Obsidian.md', 'Comprar um caderno novo.\n\n- [ ] Pesquisar preços');
+  await sync();
+  db = await t.db();
+  const novo = Object.values(db.books).find((b) => b.title === 'Ideia vinda do Obsidian');
+  check(novo && novo.houseId === null && novo.blocks.length === 2, 'nota nova do Obsidian não virou livro no Correio');
+  check((await read('00 - Caixa de Entrada/Ideia vinda do Obsidian.md')).includes(`recanto_id: ${novo.id}`), 'recanto_id não foi acrescentado à nota nova');
+  // o livro mostra o atalho para abrir no Obsidian
+  await t.eval((id) => window.__pm.ui.open({ type: 'book', id }), bid);
+  check(await t.page.isVisible('.panel >> text=Abrir no Obsidian'), 'livro sem o atalho para o Obsidian');
+  const href = await t.page.getAttribute('.panel a:has-text("Abrir no Obsidian")', 'href');
+  check(href.startsWith('obsidian://open?vault=Meu%20Vault&file=10%20-%20%C3%81reas'), `link do Obsidian incorreto: ${href}`);
+  // a configuração do Vault fica gravada no Recanto (a pasta em si fica no IndexedDB do navegador;
+  // recarregar com uma pasta virtual derruba o Chromium sem interface, então isso não é exercitado aqui)
+  check((await t.eval(() => window.__pm.dbStore.getState().db.meta.world.vault.name)) === 'Meu Vault', 'configuração do Vault não gravada');
+  const keys = await t.eval(async () => { const db = await new Promise((r) => { const q = indexedDB.open('palacio-mental'); q.onsuccess = () => r(q.result); }); const n = await new Promise((r) => { const q = db.transaction('handles').objectStore('handles').count(); q.onsuccess = () => r(q.result); }); db.close(); return n; });
+  check(keys === 1, 'a pasta ligada não foi guardada no navegador');
+  await t.ctx.close();
+});
+
+await scenario('conexões entre livros e Mapa de Conexões', async (open) => {
+  const t = await open();
+  await t.start('six');
+  await t.reduceMotion();
+  const ids = await t.eval(() => {
+    const { exec, ops, dbStore } = window.__pm;
+    const F = (n) => Object.values(dbStore.getState().db.furniture).find((f) => f.name === n).id;
+    return exec('seed', (d) => {
+      const a = ops.createBook(d, { title: 'Projeto de expansão', templateId: 'tpl_project', furnitureId: F('Projetos') });
+      const b = ops.createBook(d, { title: 'Fornecedor Alfa', furnitureId: F('Equipes') });
+      const c = ops.createBook(d, { title: 'Reunião de kickoff', furnitureId: F('Reuniões') });
+      ops.addBlock(d, a, 'bookref', undefined, { bookId: b });
+      ops.addBlock(d, c, 'text', undefined, { text: 'Seguimos com [[Projeto de expansão]].' });
+      return [a, b, c];
+    });
+  });
+  await t.eval((id) => window.__pm.ui.open({ type: 'book', id }), ids[0]);
+  check(await t.page.isVisible('.panel >> text=Este livro cita'), 'seção de conexões sem os links de saída');
+  check(await t.page.isVisible('.panel >> text=Citado por'), 'seção de conexões sem os backlinks');
+  await t.page.click('.panel >> text=Ver no mapa');
+  await t.page.waitForSelector('svg.graph');
+  check((await t.page.locator('svg.graph g.node').count()) === 3, 'o mapa deveria mostrar 3 livros');
+  check((await t.page.locator('svg.graph line.edge').count()) === 2, 'o mapa deveria mostrar 2 conexões');
+  await t.shot('09-mapa');
+  await t.page.click('svg.graph g.node:has-text("Fornecedor Alfa")');
+  check(await t.page.isVisible('.panel-title >> text=Fornecedor Alfa'), 'clicar no nó não abriu o livro');
+  // renomear mantém os links
+  await t.eval(([id]) => window.__pm.exec('Renomear', (d) => window.__pm.ops.updateBook(d, id, { title: 'Projeto Expansão 2027' })), [ids[0]]);
+  const db = await t.db();
+  const bl = db.books[ids[2]].blocks[0];
+  check(bl.text.includes('[[Projeto Expansão 2027]]'), 'renomear não atualizou o [[link]]');
+  await t.ctx.close();
+});
+
+await scenario('tarefas que se repetem e cópias automáticas', async (open) => {
+  const t = await open();
+  await t.start('six');
+  await t.reduceMotion();
+  const tid = await t.eval(() => window.__pm.exec('Tarefa', (d) => window.__pm.ops.createTask(d, { title: 'Regar as plantas', dueDate: new Date().toISOString().slice(0, 10) })));
+  await t.eval((id) => window.__pm.ui.open({ type: 'task', id }), tid);
+  await t.page.selectOption('select[aria-label="Repetição"]', 'week');
+  check((await t.db()).tasks[tid].repeat?.every === 'week', 'repetição não salva');
+  await t.page.click('.segmented button:has-text("Concluída")');
+  const tasks = Object.values((await t.db()).tasks).filter((x) => x.title === 'Regar as plantas');
+  check(tasks.length === 2, 'a próxima ocorrência não foi criada');
+  const next = tasks.find((x) => x.status === 'pending');
+  check(next.repeat?.every === 'week' && next.dueDate > new Date().toISOString().slice(0, 10), 'a próxima ocorrência deveria repetir e ser futura');
+  // cópias automáticas: uma ao abrir, restaurar volta ao estado anterior
+  await t.page.click('button[aria-label=Configurações]');
+  check(await t.page.isVisible('.panel >> text=Cópias de segurança'), 'seção de cópias ausente');
+  await t.page.click('text=Fazer uma cópia agora');
+  await t.eval(() => window.__pm.exec('Mudança', (d) => window.__pm.ops.createBook(d, { title: 'Livro depois da cópia' })));
+  await t.page.click('.row:has-text("manual") >> text=Restaurar');
+  await t.page.click('.dialog button:has-text("Restaurar")');
+  await t.page.waitForFunction(() => !Object.values(window.__pm.dbStore.getState().db.books).some((b) => b.title === 'Livro depois da cópia'));
+  check(!!(await t.db()).tasks[tid], 'restaurar perdeu dados anteriores à cópia');
+  await t.ctx.close();
 });
 
 await scenario('celular: criar e editar conteúdo em tela pequena', async (open) => {

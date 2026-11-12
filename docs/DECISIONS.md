@@ -47,8 +47,22 @@ Registro das decisões técnicas e de produto tomadas durante o desenvolvimento,
 - "Prazo próximo" = até 3 dias.
 - Ao mover uma casa, a câmera se afasta para mostrar todos os terrenos.
 
+## Versão 2 (avaliação do relatório de 12/11/2026)
+Detalhes e justificativas em `AVALIACAO_RELATORIO.md`. Em resumo:
+21. **Obsidian por acesso direto à pasta** (File System Access API), não pelo plugin Local REST API: sem plugin, sem chave, sem CORS.
+    O acesso fica atrás de `VaultFs`, então um plugin ou app desktop podem substituí-lo.
+22. **`recanto_id` como identidade da nota**; o caminho é só a localização. O Recanto manda no lugar; o Obsidian manda no texto.
+23. **Sincronização em três vias por hash**, conflito sem perda (Obsidian vence, versão do Recanto em cópia), nunca apaga notas.
+24. **Tarefas não são lidas do Markdown**: ficam em uma seção gerada e somente leitura, para não misturar checklist documental com tarefa operacional.
+25. **Migrações não destrutivas** com cópia prévia; dados de versão mais nova são recusados; **integridade verificada na abertura**.
+26. **Cópias automáticas no navegador**: 1 por dia (14 mais recentes), mais antes de migrar, restaurar e ligar o Obsidian.
+27. **Conexões por referência e `[[wikilink]]`**, sem guardar links à parte (derivados em tempo real); renomear atualiza os links.
+28. **Tarefas que se repetem**: ao concluir, a próxima ocorrência nasce em data futura; a concluída deixa de repetir (sem duplicar).
+29. **Versão de arquivo único** (`npm run build:single`) para abrir com duplo clique; dados de exemplo para validar sem digitar.
+30. **Editor do Mundo/Ateliê e sincronização entre aparelhos adiados**: maior custo, sem impacto no uso diário.
+
 ## Pendentes — dependem do responsável pelo produto
-1. **Sincronização remota (Supabase).** Exige decidir conta, privacidade e propriedade dos dados.
+1. **Sincronização remota (Supabase) das estruturas** (casas, posições, tarefas, objetivos). O Obsidian já cobre o conteúdo dos livros; a parte operacional exige decidir conta, privacidade e propriedade dos dados.
    A arquitetura está preparada (`Repository`, ids estáveis, exclusão lógica); nada foi implementado.
 2. **Cofre e criptografia** de dados sensíveis.
-3. **Publicação do código** em repositório remoto (GitHub). Hoje o repositório Git é só local.
+3. ~~Publicação do código~~: **resolvida**. O código está em https://github.com/ferresmyke/palaciomental (privado), publicado com autorização do responsável pelo produto.

@@ -25,14 +25,21 @@ src/
     grid.ts        grade, encaixe e colisão (cidade e interiores)
     catalog.ts     leitura do catálogo por manifesto (src/catalog/*.json)
     seed.ts        modelos de livro de sistema e mundo inicial
+    migrations.ts  migrações do esquema e verificação/reparo de integridade
+    links.ts       conexões entre livros e grafo
+    demo.ts        dados de exemplo
   catalog/       manifestos de dados: objects.json, houses.json, themes.json
-  persistence/   Repository (interface), IndexedDbRepository, MemoryRepository, backup
+  integrations/
+    obsidian/      yaml, markdown (livro ↔ nota), vault (pasta real/memória), sync (três vias)
+  persistence/   Repository (interface), IndexedDbRepository, MemoryRepository, backup, snapshots
   store/
     db.ts          loja de dados + comandos reversíveis + gravação incremental
     ui.ts          estado de interface (onde estou, painéis, Reforma, avisos)
     nav.ts         viagem: casa, móvel, livro, tarefa, objetivo, praça
     gameApi.ts     contrato entre navegação e cenas; barramento de eventos
     actions.ts     execução com aviso de erro e "Desfazer"; anexos
+    vault.ts       ligação com a pasta do Obsidian: conectar, reconectar, sincronizar (manual e automática)
+    protection.ts  cópias de segurança: fazer e restaurar
   game/
     art/           motor de pixel art procedural e todos os sprites
     core.ts        câmera, rótulos em HTML, luz por hora, caminhante
@@ -80,6 +87,17 @@ Se o IndexedDB não estiver disponível, o app usa memória e avisa o usuário.
 - Anexos para o Storage do Supabase, referenciados pelo mesmo `id`.
 - Migrações de esquema: `SCHEMA_VERSION` em `types.ts` e `meta.world.schemaVersion`.
 A sincronização não foi implementada: privacidade e propriedade dos dados exigem decisão do responsável pelo produto.
+
+## Proteção dos dados (v2)
+- **Esquema versionado** (`SCHEMA_VERSION`, atualmente 2). Ao abrir: carrega → (se precisa migrar) guarda cópia → `migrate` → `repairIntegrity` →
+  limpa a lixeira vencida. Dados de versão mais nova são recusados.
+- **IndexedDB v2**: stores `snapshots` (cópias) e `handles` (pasta do Obsidian), além dos anteriores. Atualização não destrutiva.
+- **Cópias automáticas**: 1 por dia (as 14 mais recentes) e antes de migrar, restaurar uma cópia ou ligar o Obsidian.
+- Regra: **toda mudança de esquema ganha uma migração e um teste** (`tests/v2.test.ts` mostra o padrão).
+
+## Obsidian (v2)
+`integrations/obsidian/` não depende de React nem de Phaser; recebe um `SyncDeps` (vault, leitura do banco, `commit`, anexos). A pasta real usa
+`HandleVault` (File System Access); os testes usam `MemoryVault`. Detalhes em `OBSIDIAN.md`.
 
 ## Desempenho
 - Gravação incremental (só registros alterados) e agrupamento de digitação.

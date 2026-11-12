@@ -8,7 +8,7 @@ export type ID = string;
 export type ISODate = string;
 export type Timestamp = number;
 
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 
 export type TaskStatus = 'planning' | 'pending' | 'doing' | 'waiting' | 'done' | 'archived';
 export type Priority = 'low' | 'normal' | 'high' | 'critical';
@@ -40,8 +40,20 @@ export interface Settings {
   avatar: AvatarLook;
 }
 
+/** Pasta do Obsidian ligada ao Recanto (a pasta em si fica guardada à parte, no navegador). */
+export interface VaultSettings {
+  name: string;
+  /** Sincroniza sozinho ao abrir o app e ao voltar para a janela. */
+  auto: boolean;
+  lastSync: number | null;
+  lastSummary?: string;
+}
+
 export interface WorldMeta {
   id: 'world';
+  vault?: VaultSettings;
+  /** Última cópia de segurança automática (ou exportação) feita. */
+  lastBackupAt?: number;
   name: string;
   createdAt: Timestamp;
   onboarded: boolean;
@@ -169,8 +181,23 @@ export interface ProjectInfo {
   description: string;
 }
 
+/** Ligação de um livro com uma nota Markdown do Obsidian. O caminho é só a localização atual. */
+export interface NoteLink {
+  path: string;
+  /** Pasta esperada pelo Recanto na última sincronização. */
+  dir: string;
+  /** Hash do arquivo como ficou na última sincronização. */
+  hash: string;
+  /** Hash do conteúdo do livro (sem partes geradas) na última sincronização. */
+  rhash: string;
+  /** Hash da seção de tarefas geradas. */
+  ghash: string;
+  syncedAt: number;
+}
+
 export interface Book {
   id: ID;
+  note?: NoteLink;
   title: string;
   templateId: ID;
   /** null = no Correio. */
@@ -196,8 +223,17 @@ export interface TaskLink {
   url: string;
 }
 
+export type RepeatUnit = 'day' | 'week' | 'month' | 'year';
+
+export interface Repeat {
+  every: RepeatUnit;
+  interval: number;
+}
+
 export interface Task {
   id: ID;
+  /** Ao concluir, cria a próxima ocorrência. */
+  repeat?: Repeat | null;
   title: string;
   description: string;
   /** null = no Correio. */
@@ -251,6 +287,8 @@ export interface Constellation {
 
 export interface Attachment {
   id: ID;
+  /** Caminho do arquivo dentro do Vault do Obsidian, quando já foi enviado. */
+  vaultPath?: string;
   name: string;
   mime: string;
   size: number;
@@ -371,3 +409,10 @@ export const FIELD_TYPE_LABEL: Record<FieldType, string> = {
 export const STATUSES: TaskStatus[] = ['planning', 'pending', 'doing', 'waiting', 'done', 'archived'];
 export const PRIORITIES: Priority[] = ['low', 'normal', 'high', 'critical'];
 export const HORIZONS: Horizon[] = ['quarter', 'year', 'long'];
+
+export const REPEAT_LABEL: Record<RepeatUnit, [string, string]> = {
+  day: ['dia', 'dias'],
+  week: ['semana', 'semanas'],
+  month: ['mês', 'meses'],
+  year: ['ano', 'anos'],
+};

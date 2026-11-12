@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { loadDemo } from '@/domain/demo';
 import * as ops from '@/domain/ops';
 import { run } from '@/store/actions';
 
@@ -12,8 +13,12 @@ const STORY = [
 export function Onboarding() {
   const [step, setStep] = useState(0);
   const [name, setName] = useState('Recanto');
-  const [mode, setMode] = useState<'six' | 'zero'>('six');
-  const start = () => run('Começar o Recanto', (d) => ops.completeOnboarding(d, { name, mode }), { transient: true });
+  const [mode, setMode] = useState<'six' | 'zero' | 'demo'>('six');
+  const start = () =>
+    run('Começar o Recanto', (d) => {
+      ops.completeOnboarding(d, { name, mode });
+      if (mode === 'demo') loadDemo(d);
+    }, { transient: true });
   return (
     <div className="onboarding" role="dialog" aria-label="Boas-vindas ao Recanto" aria-modal="true">
       <div className="onboarding-card">
@@ -50,6 +55,13 @@ export function Onboarding() {
                 <span>
                   <strong>Começar com as seis casas sugeridas</strong>
                   <span className="muted">Oficina, Lar, Tesouraria, Ginásio, Hospedaria e Ateliê, já mobiliadas. Recomendado.</span>
+                </span>
+              </label>
+              <label className={`choice${mode === 'demo' ? ' on' : ''}`}>
+                <input type="radio" name="start" checked={mode === 'demo'} onChange={() => setMode('demo')} />
+                <span>
+                  <strong>Explorar com exemplos</strong>
+                  <span className="muted">As seis casas já com pessoas, contratos, projetos, tarefas e objetivos de exemplo, para você navegar e testar. Dá para apagar tudo depois.</span>
                 </span>
               </label>
               <label className={`choice${mode === 'zero' ? ' on' : ''}`}>

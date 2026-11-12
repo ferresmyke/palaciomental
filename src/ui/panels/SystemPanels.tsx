@@ -1,8 +1,9 @@
 /**
  * Configurações, lixeira, modelos de livro e ajuda.
  */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { EMBLEMS } from '@/domain/catalog';
+import { loadDemo } from '@/domain/demo';
 import * as ops from '@/domain/ops';
 import { liveTemplates, trashEntries } from '@/domain/selectors';
 import { FIELD_TYPE_LABEL, type AvatarLook, type FieldDef, type FieldType, type ID, type LightMode } from '@/domain/types';
@@ -12,7 +13,9 @@ import { COVER_COLORS, cssColor } from '@/game/art/palette';
 import { fixedSprite, spritePreviewUrl } from '@/game/art/sprites';
 import { BackupError, exportBackup, importBackup } from '@/persistence/backup';
 import { clearBlobUrls, run, runWithUndo } from '@/store/actions';
-import { flush, getDb, getRepo, replaceDb } from '@/store/db';
+import { exec, flush, getDb, getRepo, replaceDb } from '@/store/db';
+import { restoreSnapshot, snapshotNow } from '@/store/protection';
+import type { Snapshot } from '@/persistence/repository';
 import { ui, uiStore } from '@/store/ui';
 import { TAG_COLORS } from '../editors';
 import { AutoInput, Chip, Empty, Field, Icon, InlineEdit, Panel, QuickAdd, Section, Segmented, Swatches, useDb, useNow } from '../kit';
@@ -50,6 +53,7 @@ async function doExport(): Promise<void> {
   a.download = `${name}-${new Date().toISOString().slice(0, 10)}.json`;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  exec('Registrar backup', (d) => { if (d.meta.world) d.meta.world.lastBackupAt = Date.now(); }, { transient: true });
   ui.toast('Backup exportado: conteúdo, modelos, layout e anexos.', 'ok');
 }
 
@@ -66,6 +70,60 @@ async function doImport(file: File): Promise<void> {
   } catch (e) {
     ui.toast(e instanceof BackupError ? e.message : 'Não foi possível importar este arquivo.', 'error');
   }
+}
+
+function Snapshots() {
+  const db = useDb();
+  const now = useNow();
+  const [list, setList] = useState<Omit<Snapshot, 'json'>[]>([]);
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    let alive = true;
+    void getRepo().listSnapshots().then((l) => alive && setList(l));
+    return () => {
+      alive = false;
+    };
+  }, [tick]);
+  const last = db.meta.world?.lastBackupAt;
+  const days = last ? Math.floor((now - last) / 86400000) : null;
+  return (
+    <Section title="Cópias de segurança" count={list.length}>
+      <p className="muted">
+        O Recanto guarda uma cópia por dia neste navegador (as 14 mais recentes) e antes de qualquer atualização dos dados.
+        {days === null ? ' Ainda não houve exportação de backup em arquivo.' : ` Último backup em arquivo: ${days === 0 ? 'hoje' : `há ${plural(days, 'dia', 'dias')}`}.`}
+      </p>
+      <button className="btn ghost" onClick={() => void snapshotNow().then(() => (setTick(tick + 1), ui.toast('Cópia guardada.', 'ok')))}>
+        Fazer uma cópia agora
+      </button>
+      {list.slice(0, 8).map((s) => (
+        <div key={s.id} className="row">
+          <div className="row-main static">
+            <span className="row-title">{new Date(s.at).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}</span>
+            <span className="row-meta">
+              <span>{s.reason}</span>
+              <span>
+                {plural(s.houses, 'casa', 'casas')} · {plural(s.books, 'livro', 'livros')} · {plural(s.tasks, 'tarefa', 'tarefas')}
+              </span>
+            </span>
+          </div>
+          <button
+            className="btn ghost"
+            onClick={() =>
+              ui.confirm({
+                title: 'Restaurar esta cópia?',
+                body: 'O Recanto volta ao estado desta cópia. O estado atual é guardado antes em outra cópia, então dá para voltar atrás.',
+                confirmLabel: 'Restaurar',
+                danger: true,
+                onConfirm: () => void restoreSnapshot(s.id).then((ok) => { setTick(tick + 1); ui.toast(ok ? 'Cópia restaurada.' : 'Cópia não encontrada.', ok ? 'ok' : 'error'); }),
+              })
+            }
+          >
+            Restaurar
+          </button>
+        </div>
+      ))}
+    </Section>
+  );
 }
 
 export function SettingsPanel() {
@@ -129,6 +187,7 @@ export function SettingsPanel() {
         ))}
         <QuickAdd placeholder="Nova etiqueta" label="Nova etiqueta" onAdd={(name) => run('Criar etiqueta', (d) => ops.createTag(d, name, TAG_COLORS[Object.keys(d.tags).length % TAG_COLORS.length]))} />
       </Section>
+      <Snapshots />
       <Section title="Seus dados">
         <p className="muted">Tudo fica guardado neste navegador, neste aparelho. Exporte um backup de tempos em tempos.</p>
         <div className="btn-row">
@@ -159,6 +218,12 @@ export function SettingsPanel() {
           />
         </div>
         <div className="btn-row">
+          <button className="btn" onClick={() => ui.push({ type: 'obsidian' })}>
+            Obsidian
+          </button>
+          <button className="btn ghost" onClick={() => ui.push({ type: 'map' })}>
+            Mapa de Conexões
+          </button>
           <button className="btn ghost" onClick={() => ui.push({ type: 'templates' })}>
             Modelos de livro
           </button>
@@ -167,6 +232,19 @@ export function SettingsPanel() {
           </button>
           <button className="btn ghost" onClick={() => ui.push({ type: 'help' })}>
             Atalhos
+          </button>
+          <button
+            className="btn ghost"
+            onClick={() =>
+              ui.confirm({
+                title: 'Adicionar dados de exemplo?',
+                body: 'Entram pessoas, contratos, projetos, tarefas e objetivos de exemplo nas casas atuais. Nada do que você já tem muda, e dá para desfazer logo em seguida (Ctrl+Z).',
+                confirmLabel: 'Adicionar exemplos',
+                onConfirm: () => run('Adicionar dados de exemplo', (d) => loadDemo(d)) !== undefined && ui.toast('Exemplos adicionados. Dê uma volta pelas casas.', 'ok'),
+              })
+            }
+          >
+            Dados de exemplo
           </button>
         </div>
       </Section>

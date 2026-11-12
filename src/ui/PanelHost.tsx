@@ -7,6 +7,8 @@ import { BoardPanel, ChestPanel, DeskPanel, FurniturePanel } from './panels/Hous
 import { DeleteConstellationPanel, DeleteFurniturePanel, DeleteHousePanel, DeleteTemplatePanel, HousePanel, HousesPanel, NewHousePanel, RestoreDestPanel } from './panels/ManagePanels';
 import { StorePanel } from './panels/StorePanel';
 import { HelpPanel, SettingsPanel, TemplatesPanel, TrashPanel } from './panels/SystemPanels';
+import { MapPanel } from './panels/MapPanel';
+import { ObsidianPanel } from './panels/ObsidianPanel';
 import { TaskPanel } from './panels/TaskPanel';
 
 function render(p: Panel) {
@@ -61,6 +63,10 @@ function render(p: Panel) {
       return <DeleteConstellationPanel id={p.id} />;
     case 'restoreDest':
       return <RestoreDestPanel items={p.items} />;
+    case 'obsidian':
+      return <ObsidianPanel />;
+    case 'map':
+      return <MapPanel key={p.id ?? 'all'} id={p.id} />;
     case 'help':
       return <HelpPanel />;
   }

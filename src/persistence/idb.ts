@@ -1,19 +1,24 @@
 import { openDB, type IDBPDatabase } from 'idb';
 import { emptyDb, TABLES } from '@/domain/types';
 import type { Db, ID } from '@/domain/types';
-import type { Change, Repository, StoredBlob } from './repository';
+import type { Change, Repository, Snapshot, StoredBlob } from './repository';
 
 const BLOBS = 'blobs';
+const SNAPS = 'snapshots';
+const HANDLES = 'handles';
 
 /** Persistência local-first no navegador. Um object store por tabela, mais os anexos. */
 export class IndexedDbRepository implements Repository {
   private dbp: Promise<IDBPDatabase>;
 
   constructor(name = 'palacio-mental') {
-    this.dbp = openDB(name, 1, {
+    this.dbp = openDB(name, 2, {
+      // v1: tabelas e anexos. v2: cópias automáticas e pastas ligadas (Obsidian). Nada é apagado ao atualizar.
       upgrade(db) {
         for (const t of TABLES) if (!db.objectStoreNames.contains(t)) db.createObjectStore(t, { keyPath: 'id' });
         if (!db.objectStoreNames.contains(BLOBS)) db.createObjectStore(BLOBS, { keyPath: 'id' });
+        if (!db.objectStoreNames.contains(SNAPS)) db.createObjectStore(SNAPS, { keyPath: 'id' });
+        if (!db.objectStoreNames.contains(HANDLES)) db.createObjectStore(HANDLES);
       },
     });
   }
@@ -69,5 +74,28 @@ export class IndexedDbRepository implements Repository {
   }
   async clearBlobs(): Promise<void> {
     await (await this.dbp).clear(BLOBS);
+  }
+
+  async putSnapshot(s: Snapshot): Promise<void> {
+    await (await this.dbp).put(SNAPS, s);
+  }
+  async listSnapshots(): Promise<Omit<Snapshot, 'json'>[]> {
+    const all = (await (await this.dbp).getAll(SNAPS)) as Snapshot[];
+    return all.sort((a, b) => b.at - a.at).map(({ json: _json, ...rest }) => rest);
+  }
+  async getSnapshot(id: ID): Promise<Snapshot | undefined> {
+    return (await this.dbp).get(SNAPS, id);
+  }
+  async deleteSnapshot(id: ID): Promise<void> {
+    await (await this.dbp).delete(SNAPS, id);
+  }
+  async putHandle(key: string, value: unknown): Promise<void> {
+    await (await this.dbp).put(HANDLES, value, key);
+  }
+  async getHandle(key: string): Promise<unknown | undefined> {
+    return (await this.dbp).get(HANDLES, key);
+  }
+  async deleteHandle(key: string): Promise<void> {
+    await (await this.dbp).delete(HANDLES, key);
   }
 }

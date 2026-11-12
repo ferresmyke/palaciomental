@@ -11,6 +11,7 @@ import { dbStore } from '@/store/db';
 import { gameApi } from '@/store/gameApi';
 import { goBack, goToHouse, goToObservatory, goToPlaza, leaveToCity } from '@/store/nav';
 import { ui, type Panel } from '@/store/ui';
+import { reconnectVault, vaultStore } from '@/store/vault';
 import { Icon, useDb, useNow, useUi } from './kit';
 import { Minimap } from './Minimap';
 import { tidyNext } from './panels/HousePanels';
@@ -27,6 +28,8 @@ const PANEL_NAME: Partial<Record<Panel['type'], string>> = {
   houses: 'Casas',
   newHouse: 'Nova casa',
   help: 'Atalhos',
+  obsidian: 'Obsidian',
+  map: 'Mapa de Conexões',
 };
 
 function useCrumbs(): { text: string; go?: () => void }[] {
@@ -131,6 +134,7 @@ export function Hud() {
   const capture = useUi((s) => s.capture);
   const saveError = useStore(dbStore, (s) => s.saveError);
   const crumbs = useCrumbs();
+  const vaultStatus = useStore(vaultStore, (v) => v.status);
   const inbox = inboxCount(db);
   const houses = liveHouses(db);
   const house = place.kind === 'house' ? db.houses[place.houseId] : undefined;
@@ -202,6 +206,11 @@ export function Hud() {
             + Novo objetivo
           </button>
         </div>
+      )}
+      {vaultStatus === 'needs-permission' && !reform && (
+        <button className="vault-pill" onClick={() => void reconnectVault()} title="O navegador pede a permissão de novo a cada sessão">
+          ✎ Reconectar o Obsidian
+        </button>
       )}
       {saveError && (
         <div className="save-error" role="alert">

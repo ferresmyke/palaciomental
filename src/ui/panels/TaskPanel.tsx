@@ -4,7 +4,7 @@
  */
 import * as ops from '@/domain/ops';
 import { liveTemplates, taskAddress } from '@/domain/selectors';
-import { PRIORITIES, PRIORITY_LABEL, PRIORITY_SYMBOL, STATUS_LABEL, STATUS_SYMBOL, STATUSES, type ID, type Priority, type TaskStatus } from '@/domain/types';
+import { PRIORITIES, PRIORITY_LABEL, REPEAT_LABEL, PRIORITY_SYMBOL, STATUS_LABEL, STATUS_SYMBOL, STATUSES, type ID, type Priority, type RepeatUnit, type TaskStatus } from '@/domain/types';
 import { newId } from '@/domain/util';
 import { run, runWithUndo } from '@/store/actions';
 import { goToTask } from '@/store/nav';
@@ -45,6 +45,7 @@ export function TaskPanel({ id }: { id: ID }) {
           </Chip>
         )}
         {t.onDesk && <Chip symbol="▭">Na mesa de trabalho</Chip>}
+        {t.repeat && <Chip symbol="↻">Repete {t.repeat.interval > 1 ? `a cada ${t.repeat.interval} ${REPEAT_LABEL[t.repeat.every][1]}` : `toda ${REPEAT_LABEL[t.repeat.every][0]}`}</Chip>}
       </div>
       <Field label="Status">
         <Segmented<TaskStatus> label="Status" value={t.status} onChange={(status) => upd({ status }, `Marcar como ${STATUS_LABEL[status].toLowerCase()}`)} options={STATUSES.map((s) => ({ value: s, label: STATUS_LABEL[s], symbol: STATUS_SYMBOL[s] }))} />
@@ -69,6 +70,29 @@ export function TaskPanel({ id }: { id: ID }) {
           <HouseSelect value={t.houseId} label="Casa" onChange={(houseId) => run('Mudar tarefa de casa', (d) => ops.moveTask(d, id, { houseId, onDesk: false }))} />
         </Field>
       </div>
+      <Field label="Repetir" hint="Ao concluir, a próxima já aparece na Mesa do Dia, sempre em uma data futura.">
+        <div className="with-prefix">
+          <select
+            className="field-input"
+            aria-label="Repetição"
+            value={t.repeat?.every ?? 'none'}
+            onChange={(e) => run('Mudar repetição', (d) => ops.setTaskRepeat(d, id, e.target.value === 'none' ? null : { every: e.target.value as RepeatUnit, interval: t.repeat?.interval ?? 1 }))}
+          >
+            <option value="none">Não se repete</option>
+            {(Object.keys(REPEAT_LABEL) as RepeatUnit[]).map((u) => (
+              <option key={u} value={u}>
+                {t.repeat?.interval && t.repeat.interval > 1 ? `A cada ${t.repeat.interval} ${REPEAT_LABEL[u][1]}` : u === 'day' ? 'Todo dia' : u === 'week' ? 'Toda semana' : u === 'month' ? 'Todo mês' : 'Todo ano'}
+              </option>
+            ))}
+          </select>
+          {t.repeat && (
+            <label className="with-prefix">
+              <span className="prefix">a cada</span>
+              <input className="field-input narrow" type="number" min={1} max={99} aria-label="Intervalo da repetição" value={t.repeat.interval} onChange={(e) => run('Mudar repetição', (d) => ops.setTaskRepeat(d, id, { every: t.repeat!.every, interval: Number(e.target.value) || 1 }), { merge: `rep:${id}` })} />
+            </label>
+          )}
+        </div>
+      </Field>
       <Field label="Livro" hint="Opcional. A tarefa passa a fazer parte do livro (por exemplo, um projeto).">
         <BookPicker value={t.bookId} label="Livro da tarefa" onChange={(bookId) => run('Ligar tarefa a livro', (d) => ops.moveTask(d, id, { houseId: t.houseId, bookId, onDesk: bookId ? false : t.onDesk }))} />
       </Field>

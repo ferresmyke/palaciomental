@@ -4,11 +4,13 @@
  */
 import { applyPatches, enablePatches, produceWithPatches, type Patch } from 'immer';
 import { createStore } from 'zustand/vanilla';
+import { migrate, needsMigration, repairIntegrity } from '@/domain/migrations';
 import { clock, initWorld, purgeExpired } from '@/domain/ops';
 import { emptyDb, TABLES } from '@/domain/types';
 import type { Db, ID, TableName } from '@/domain/types';
 import type { Change, Repository } from '@/persistence/repository';
 import { MemoryRepository } from '@/persistence/memory';
+import { ensureDailySnapshot, takeSnapshot } from '@/persistence/snapshots';
 
 enablePatches();
 
@@ -147,10 +149,26 @@ export async function initStore(r: Repository): Promise<void> {
   repo = r;
   queue = Promise.resolve();
   const loaded = await repo.load();
+  // Antes de qualquer migração, guarda uma cópia do que existe hoje.
+  if (needsMigration(loaded)) {
+    try {
+      await takeSnapshot(loaded, repo, `antes da migração (v${loaded.meta.world.schemaVersion})`);
+    } catch (e) {
+      console.warn('Cópia prévia à migração falhou', e);
+    }
+  }
   dbStore.setState({ db: loaded, ready: false, undoStack: [], redoStack: [], rev: 0, saveError: null });
   exec('Preparar o Recanto', (d) => initWorld(d), { transient: true });
+  exec('Migrar dados', (d) => migrate(d), { transient: true });
+  const repaired = exec('Verificar integridade', (d) => repairIntegrity(d), { transient: true });
+  if (repaired) console.warn(`Integridade: ${repaired} referência(s) quebrada(s) corrigida(s).`);
   exec('Limpar lixeira vencida', (d) => purgeExpired(d, clock.now()), { transient: true });
   await flush();
+  try {
+    await ensureDailySnapshot(getDb(), repo);
+  } catch (e) {
+    console.warn('Cópia automática ignorada', e);
+  }
   // Anexos órfãos (sem registro) são descartados.
   try {
     const known = new Set(Object.keys(getDb().attachments));
@@ -159,10 +177,27 @@ export async function initStore(r: Repository): Promise<void> {
     console.warn('Limpeza de anexos ignorada', e);
   }
   dbStore.setState({ ready: true });
+  installDailySnapshots();
+}
+
+let snapshotsInstalled = false;
+let snapTimer: ReturnType<typeof setTimeout> | undefined;
+
+/** Garante uma cópia por dia mesmo para quem deixa o app aberto ou acabou de começar. */
+function installDailySnapshots(): void {
+  if (snapshotsInstalled) return;
+  snapshotsInstalled = true;
+  dbStore.subscribe(() => {
+    clearTimeout(snapTimer);
+    snapTimer = setTimeout(() => void ensureDailySnapshot(getDb(), repo).catch(() => {}), 20000);
+  });
 }
 
 /** Substitui todo o banco (importação de backup). Zera o histórico de desfazer. */
 export function replaceDb(db: Db): void {
   dbStore.setState({ db, undoStack: [], redoStack: [], rev: dbStore.getState().rev + 1 });
   exec('Preparar o Recanto', (d) => initWorld(d), { transient: true });
+  // Backups e cópias de versões anteriores são atualizados para o esquema atual.
+  exec('Migrar dados', (d) => migrate(d), { transient: true });
+  exec('Verificar integridade', (d) => repairIntegrity(d), { transient: true });
 }

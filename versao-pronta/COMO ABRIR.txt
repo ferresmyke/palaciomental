@@ -1,0 +1,48 @@
+PALÁCIO MENTAL — O RECANTO (versão 2)
+=====================================
+
+COMO ABRIR (3 passos, sem instalar nada)
+----------------------------------------
+1. No GitHub, abra o repositório  ferresmyke/palaciomental  e clique em
+      Code  ▸  Download ZIP
+   Depois descompacte o ZIP (botão direito ▸ Extrair tudo).
+
+2. Abra a pasta  versao-pronta  e dê DUPLO CLIQUE no arquivo:
+      Recanto.html
+
+3. Use o GOOGLE CHROME ou o MICROSOFT EDGE.
+   (Se abrir em outro navegador: botão direito no arquivo ▸ Abrir com ▸ Chrome ou Edge.
+    A ligação com o Obsidian só funciona nesses dois.)
+
+Na primeira tela, escolha "Explorar com exemplos": o Recanto já abre cheio de pessoas,
+contratos, projetos, tarefas e objetivos para você navegar e validar.
+O passo a passo do que testar está em  docs\GUIA_DE_TESTE.md  (ou no final deste arquivo).
+
+IMPORTANTE
+----------
+* Seus dados ficam guardados NO NAVEGADOR em que você abriu. Use sempre o mesmo navegador.
+* Faça um backup de vez em quando: Configurações ▸ Seus dados ▸ Exportar backup.
+* O Recanto também guarda uma cópia automática por dia (Configurações ▸ Cópias de segurança).
+* Para começar "de verdade" depois de testar: abra o Recanto em uma janela anônima, ou apague
+  os dados do site no navegador, ou simplesmente apague as casas de exemplo.
+
+TESTAR O OBSIDIAN SEM RISCO
+---------------------------
+Esta pasta traz um Vault de brinquedo:  Vault-de-exemplo
+1. No Recanto: Configurações ▸ Obsidian ▸ "Escolher a pasta do Obsidian…"
+2. Escolha a pasta  Vault-de-exemplo  e confirme a permissão.
+3. Veja as 3 notas de exemplo virarem livros (no Correio e nas casas Lar e Ateliê) e os livros do
+   Recanto virarem notas dentro da pasta.
+4. (Opcional) No Obsidian: "Abrir pasta como cofre" ▸ Vault-de-exemplo. Edite uma nota, volte ao
+   Recanto e clique "Sincronizar agora".
+Só depois de validar, ligue o seu Vault de verdade (de preferência uma CÓPIA dele no primeiro teste).
+
+ATALHOS ÚTEIS
+-------------
+N = anotar no Correio   / = buscar   M = Mesa do Dia   R = Modo Reforma   O = Observatório
+0 = Praça   1 a 6 = casas   Ctrl+Z = desfazer   ? = lista de atalhos
+
+SE ALGO NÃO FUNCIONAR
+---------------------
+Me diga o que clicou e o que esperava ver (um print ajuda). Também dá para conferir o código e os
+testes: o repositório tem 72 testes automáticos e 17 cenários que percorrem a interface.

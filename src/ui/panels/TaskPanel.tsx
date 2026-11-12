@@ -45,7 +45,7 @@ export function TaskPanel({ id }: { id: ID }) {
           </Chip>
         )}
         {t.onDesk && <Chip symbol="▭">Na mesa de trabalho</Chip>}
-        {t.repeat && <Chip symbol="↻">Repete {t.repeat.interval > 1 ? `a cada ${t.repeat.interval} ${REPEAT_LABEL[t.repeat.every][1]}` : `toda ${REPEAT_LABEL[t.repeat.every][0]}`}</Chip>}
+        {t.repeat && <Chip symbol="↻">Repete {t.repeat.interval > 1 ? `a cada ${t.repeat.interval} ${REPEAT_LABEL[t.repeat.every][1]}` : ({ day: 'todo dia', week: 'toda semana', month: 'todo mês', year: 'todo ano' } as const)[t.repeat.every]}</Chip>}
       </div>
       <Field label="Status">
         <Segmented<TaskStatus> label="Status" value={t.status} onChange={(status) => upd({ status }, `Marcar como ${STATUS_LABEL[status].toLowerCase()}`)} options={STATUSES.map((s) => ({ value: s, label: STATUS_LABEL[s], symbol: STATUS_SYMBOL[s] }))} />

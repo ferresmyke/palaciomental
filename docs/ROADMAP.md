@@ -16,7 +16,7 @@
   calculado, "Traçar caminho", estrelas sem caminho e adormecidas; baús e histórico; breadcrumbs; viagem rápida.
 - **Fase 6 · Ferramentas**: Correio com cadastro rápido (`N`) e classificação; Mesa do Dia completa;
   busca universal com viagem; Ronda semanal; exportar/importar.
-- **Fase 7 · Refinamento**: 43 testes de domínio/persistência e 14 cenários ponta a ponta; celular;
+- **Fase 7 · Refinamento**: 72 testes de domínio, persistência e Obsidian e 18 cenários ponta a ponta; celular;
   acessibilidade; desempenho com listas paginadas.
 
 ## Versão 2 (12–13/11/2026): proteção, Obsidian, conexões, uso diário

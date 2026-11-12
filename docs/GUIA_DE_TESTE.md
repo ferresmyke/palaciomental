@@ -18,7 +18,7 @@ Marque cada item. Se algo não corresponder ao esperado, anote qual item e me co
 
 ## 3. Tarefas, prazos e repetição (novo)
 - [ ] `M` abre a **Mesa do Dia**: Hoje, Próximos 7 dias, Atrasadas, Urgentes, Em andamento, Aguardando, Concluídas.
-- [ ] Abra a tarefa **Pagar o aluguel**: ela está marcada **↻ Repete toda mês**. Conclua-a: **a próxima já aparece** com prazo no futuro.
+- [ ] Abra a tarefa **Pagar o aluguel**: ela está marcada **↻ Repete todo mês**. Conclua-a: **a próxima já aparece** com prazo no futuro.
 - [ ] Crie uma tarefa e use **Repetir › Toda semana** (ou "a cada 2 dias"). Conclua e veja a próxima nascer.
 - [ ] O risco de atraso aparece com símbolo e texto (⚑ Atrasada, ◉ Vence hoje), nunca só com cor.
 

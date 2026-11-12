@@ -45,4 +45,4 @@ N = anotar no Correio   / = buscar   M = Mesa do Dia   R = Modo Reforma   O = Ob
 SE ALGO NÃO FUNCIONAR
 ---------------------
 Me diga o que clicou e o que esperava ver (um print ajuda). Também dá para conferir o código e os
-testes: o repositório tem 72 testes automáticos e 17 cenários que percorrem a interface.
+testes: o repositório tem 72 testes automáticos e 18 cenários que percorrem a interface.
